@@ -1,6 +1,6 @@
 import { eq, desc, gte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, InsertProduct, users, products, orders, orderItems, customers, deliveryPersons, addonCategories, addons, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer, DeliveryPerson, InsertDeliveryPerson, AddonCategory, Addon, InsertAddonCategory, InsertAddon } from "../drizzle/schema";
+import { InsertUser, InsertProduct, users, products, orders, orderItems, customers, deliveryPersons, addonCategories, addons, storeSettings, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer, DeliveryPerson, InsertDeliveryPerson, AddonCategory, Addon, InsertAddonCategory, InsertAddon, StoreSetting } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -589,4 +589,41 @@ export async function deleteAddon(id: number): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(addons).where(eq(addons.id, id));
+}
+
+// ─── Store Settings ────────────────────────────────────────────────────────────
+
+/** Retorna todas as configurações como um mapa key→value */
+export async function getAllSettings(): Promise<Record<string, string | null>> {
+  const db = await getDb();
+  if (!db) return {};
+  const rows = await db.select().from(storeSettings);
+  return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+}
+
+/** Salva (upsert) uma lista de configurações */
+export async function saveSettings(
+  entries: { key: string; value: string; label?: string }[]
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  for (const entry of entries) {
+    // Tenta atualizar; se não existir, insere
+    const existing = await db
+      .select({ id: storeSettings.id })
+      .from(storeSettings)
+      .where(eq(storeSettings.key, entry.key));
+    if (existing.length > 0) {
+      await db
+        .update(storeSettings)
+        .set({ value: entry.value, label: entry.label })
+        .where(eq(storeSettings.key, entry.key));
+    } else {
+      await db.insert(storeSettings).values([{
+        key: entry.key,
+        value: entry.value,
+        label: entry.label,
+      }]);
+    }
+  }
 }

@@ -169,3 +169,15 @@ export const addons = mysqlTable("addons", {
 
 export type Addon = typeof addons.$inferSelect;
 export type InsertAddon = typeof addons.$inferInsert;
+
+// Configurações da loja (endereço, horário, taxa de entrega etc.)
+export const storeSettings = mysqlTable("storeSettings", {
+  id: int("id").autoincrement().primaryKey(),
+  key: varchar("key", { length: 100 }).notNull().unique(), // ex: "address", "deliveryFee"
+  value: text("value"),                                    // valor em texto (JSON quando necessário)
+  label: varchar("label", { length: 255 }),                // rótulo amigável para exibição
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type StoreSetting = typeof storeSettings.$inferSelect;
+export type InsertStoreSetting = typeof storeSettings.$inferInsert;

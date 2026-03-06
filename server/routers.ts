@@ -39,6 +39,8 @@ import {
   createAddon,
   updateAddon,
   deleteAddon,
+  getAllSettings,
+  saveSettings,
 } from "./db";
 import { notifyOwner } from "./_core/notification";
 import Stripe from "stripe";
@@ -553,6 +555,30 @@ export const appRouter = router({
       .input(z.object({ id: z.number().int().positive() }))
       .mutation(async ({ input }) => {
         await deleteAddon(input.id);
+        return { success: true };
+      }),
+  }),
+
+  // ─── Configurações da Loja (admin) ───────────────────────────────────────
+  storeConfig: router({
+    get: adminProcedure.query(async () => {
+      return getAllSettings();
+    }),
+
+    save: adminProcedure
+      .input(
+        z.object({
+          settings: z.array(
+            z.object({
+              key: z.string(),
+              value: z.string(),
+              label: z.string().optional(),
+            })
+          ),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await saveSettings(input.settings);
         return { success: true };
       }),
   }),

@@ -18,6 +18,7 @@ import Register from "./pages/Register";
 import AppDownload from "./pages/AppDownload";
 import ProductDetail from "./pages/ProductDetail";
 import MeusPedidos from "./pages/MeusPedidos";
+import AdminConfiguracoes from "./pages/admin/AdminConfiguracoes";
 
 function Router() {
   return (
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/instalar" component={AppDownload} />
       <Route path="/produto/:id" component={ProductDetail} />
       <Route path="/meus-pedidos" component={MeusPedidos} />
+      <Route path="/admin/configuracoes" component={AdminConfiguracoes} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

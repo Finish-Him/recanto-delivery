@@ -82,7 +82,7 @@ const menuGroups: MenuGroup[] = [
   {
     title: "Sistema",
     items: [
-      { icon: Settings, label: "Configurações", path: "/admin/configuracoes", placeholder: true },
+      { icon: Settings, label: "Configurações", path: "/admin/configuracoes" },
     ],
   },
 ];
