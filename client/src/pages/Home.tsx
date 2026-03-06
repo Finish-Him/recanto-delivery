@@ -5,6 +5,7 @@ import { MemphisShapes } from "@/components/MemphisShapes";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Plus, Minus, MapPin, Clock, Star, Smartphone } from "lucide-react";
 import { toast } from "sonner";
+import { useLocation } from "wouter";
 
 const PURPLE = "oklch(0.38 0.22 305)";
 const PURPLE_MED = "oklch(0.46 0.25 305)";
@@ -19,6 +20,7 @@ const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cU
 export default function Home() {
   const { data: products, isLoading } = trpc.products.list.useQuery();
   const { addItem, updateQuantity, items, totalItems, totalAmount, grandTotal, deliveryFee, setIsOpen } = useCart();
+  const [, navigate] = useLocation();
 
   const getItemQuantity = (productId: number) => {
     const item = items.find((i) => i.productId === productId);
@@ -30,6 +32,9 @@ export default function Home() {
       productId: product.id,
       productName: product.name,
       unitPrice: parseFloat(product.price),
+      selectedAddons: [],
+      addonsTotal: 0,
+      notes: "",
     });
     toast.success(`${product.name} adicionado!`, {
       description: "Item adicionado ao carrinho.",
@@ -214,8 +219,9 @@ export default function Home() {
                 return (
                   <div
                     key={product.id}
-                    className="rounded-2xl overflow-hidden shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                    className="rounded-2xl overflow-hidden shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
                     style={{ background: WHITE, border: `2px solid ${BORDER}` }}
+                    onClick={() => navigate(`/produto/${product.id}`)}
                   >
                     {/* Product image */}
                     <div className="relative overflow-hidden" style={{ background: "oklch(0.96 0.01 305)", height: 180 }}>
@@ -284,7 +290,7 @@ export default function Home() {
                           /* Controles de quantidade — botões 48x48px */
                           <div className="flex items-center gap-1">
                             <button
-                              onClick={() => updateQuantity(product.id, qty - 1)}
+                              onClick={() => { const it = items.find((i) => i.productId === product.id); if (it) updateQuantity(it.cartItemId, qty - 1); }}
                               className="rounded-full border-2 flex items-center justify-center font-bold transition-colors hover:bg-purple-50 active:scale-95"
                               style={{
                                 borderColor: PURPLE,

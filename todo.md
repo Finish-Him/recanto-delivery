@@ -211,3 +211,19 @@
 - [x] Rodapé com links e contato
 - [x] Rota /app registrada no App.tsx
 - [x] Link "Baixar App" no header da Home
+
+## Página Dedicada por Produto (estilo iFood)
+- [x] Schema: tabela addonCategories (id, productId, name, required, maxSelect, minSelect, sortOrder)
+- [x] Schema: tabela addons (id, categoryId, name, price, available, sortOrder)
+- [x] Migração db:push
+- [x] API: getProductWithAddons (produto + categorias + adicionais)
+- [x] API: admin CRUD de categorias de adicionais por produto
+- [x] API: admin CRUD de adicionais por categoria
+- [x] Página /produto/:id com foto, descrição, adicionais por categoria e observações
+- [x] Lógica de seleção: único (radio) ou múltiplo (checkbox) por categoria
+- [x] Validação: mínimo/máximo de seleções por categoria
+- [x] Campo de observações livre
+- [x] Botão "Adicionar ao Carrinho" com subtotal calculado
+- [x] Atualizar carrinho para suportar adicionais e observações
+- [x] Home.tsx: clicar no card navega para /produto/:id
+- [x] AdminCardapio: painel lateral para gerenciar adicionais por produto

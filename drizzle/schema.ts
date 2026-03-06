@@ -133,3 +133,36 @@ export const customers = mysqlTable("customers", {
 
 export type Customer = typeof customers.$inferSelect;
 export type InsertCustomer = typeof customers.$inferInsert;
+
+// Categorias de adicionais por produto (ex: "Complementos", "Coberturas", "Frutas")
+export const addonCategories = mysqlTable("addonCategories", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId")
+    .notNull()
+    .references(() => products.id),
+  name: varchar("name", { length: 100 }).notNull(), // ex: "Complementos", "Coberturas"
+  required: boolean("required").default(false).notNull(), // obrigatório selecionar?
+  minSelect: int("minSelect").default(0).notNull(),       // mínimo de seleções
+  maxSelect: int("maxSelect").default(1).notNull(),       // máximo (1 = radio, >1 = checkbox)
+  sortOrder: int("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AddonCategory = typeof addonCategories.$inferSelect;
+export type InsertAddonCategory = typeof addonCategories.$inferInsert;
+
+// Adicionais individuais dentro de uma categoria
+export const addons = mysqlTable("addons", {
+  id: int("id").autoincrement().primaryKey(),
+  categoryId: int("categoryId")
+    .notNull()
+    .references(() => addonCategories.id),
+  name: varchar("name", { length: 150 }).notNull(), // ex: "Granola", "Leite Ninho"
+  price: decimal("price", { precision: 10, scale: 2 }).default("0.00").notNull(), // 0 = grátis
+  available: boolean("available").default(true).notNull(),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Addon = typeof addons.$inferSelect;
+export type InsertAddon = typeof addons.$inferInsert;

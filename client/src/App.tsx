@@ -21,6 +21,7 @@ import OrderTracking from "./pages/OrderTracking";
 import Register from "./pages/Register";
 import InstallApp from "./pages/InstallApp";
 import AppDownload from "./pages/AppDownload";
+import ProductDetail from "./pages/ProductDetail";
 
 function Router() {
   return (
@@ -38,6 +39,7 @@ function Router() {
       <Route path="/cadastro" component={Register} />
       <Route path="/instalar" component={InstallApp} />
       <Route path="/app" component={AppDownload} />
+      <Route path="/produto/:id" component={ProductDetail} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

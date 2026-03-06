@@ -30,6 +30,14 @@ import {
   assignOrderToDeliveryPerson,
   getOrdersByDeliveryPerson,
   getDeliveryPersonStats,
+  getProductWithAddons,
+  getAddonCategoriesByProduct,
+  createAddonCategory,
+  updateAddonCategory,
+  deleteAddonCategory,
+  createAddon,
+  updateAddon,
+  deleteAddon,
 } from "./db";
 import { notifyOwner } from "./_core/notification";
 import Stripe from "stripe";
@@ -440,6 +448,101 @@ export const appRouter = router({
       )
       .mutation(async ({ input }) => {
         await assignOrderToDeliveryPerson(input.orderId, input.deliveryPersonId);
+        return { success: true };
+      }),
+  }),
+
+  // ─── Addons ───────────────────────────────────────────────────────────────────
+  addons: router({
+    // Público: buscar produto com todas as categorias e adicionais
+    getProduct: publicProcedure
+      .input(z.object({ productId: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        const product = await getProductWithAddons(input.productId);
+        if (!product) throw new TRPCError({ code: "NOT_FOUND", message: "Produto não encontrado." });
+        return product;
+      }),
+
+    // Admin: listar categorias de adicionais por produto (inclui inativos)
+    listCategories: adminProcedure
+      .input(z.object({ productId: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        return getAddonCategoriesByProduct(input.productId);
+      }),
+
+    // Admin: criar categoria de adicionais
+    createCategory: adminProcedure
+      .input(z.object({
+        productId: z.number().int().positive(),
+        name: z.string().min(1).max(100),
+        required: z.boolean().default(false),
+        minSelect: z.number().int().min(0).default(0),
+        maxSelect: z.number().int().min(1).default(1),
+        sortOrder: z.number().int().default(0),
+      }))
+      .mutation(async ({ input }) => {
+        const id = await createAddonCategory(input);
+        return { id };
+      }),
+
+    // Admin: atualizar categoria
+    updateCategory: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        name: z.string().min(1).max(100).optional(),
+        required: z.boolean().optional(),
+        minSelect: z.number().int().min(0).optional(),
+        maxSelect: z.number().int().min(1).optional(),
+        sortOrder: z.number().int().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateAddonCategory(id, data);
+        return { success: true };
+      }),
+
+    // Admin: deletar categoria (e seus adicionais)
+    deleteCategory: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ input }) => {
+        await deleteAddonCategory(input.id);
+        return { success: true };
+      }),
+
+    // Admin: criar adicional
+    createAddon: adminProcedure
+      .input(z.object({
+        categoryId: z.number().int().positive(),
+        name: z.string().min(1).max(150),
+        price: z.string().default("0.00"),
+        available: z.boolean().default(true),
+        sortOrder: z.number().int().default(0),
+      }))
+      .mutation(async ({ input }) => {
+        const id = await createAddon(input);
+        return { id };
+      }),
+
+    // Admin: atualizar adicional
+    updateAddon: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        name: z.string().min(1).max(150).optional(),
+        price: z.string().optional(),
+        available: z.boolean().optional(),
+        sortOrder: z.number().int().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateAddon(id, data);
+        return { success: true };
+      }),
+
+    // Admin: deletar adicional
+    deleteAddon: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ input }) => {
+        await deleteAddon(input.id);
         return { success: true };
       }),
   }),

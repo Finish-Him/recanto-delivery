@@ -85,8 +85,8 @@ export function CartDrawer() {
               <div className="space-y-3">
                 {items.map((item) => (
                   <div
-                    key={item.productId}
-                    className="flex items-center gap-3 rounded-2xl border"
+                    key={item.cartItemId}
+                    className="flex items-start gap-3 rounded-2xl border"
                     style={{ borderColor: BORDER, padding: "12px" }}
                   >
                     {/* Emoji ícone */}
@@ -100,44 +100,58 @@ export function CartDrawer() {
                       <p className="font-black text-sm leading-tight truncate" style={{ color: DARK }}>
                         {item.productName}
                       </p>
-                      <p className="text-sm font-bold mt-0.5" style={{ color: PURPLE }}>
-                        R$ {(item.unitPrice * item.quantity).toFixed(2).replace(".", ",")}
+                      {/* Adicionais selecionados */}
+                      {item.selectedAddons.length > 0 && (
+                        <p className="text-xs font-semibold mt-0.5 leading-snug" style={{ color: GRAY }}>
+                          + {item.selectedAddons.map((a) => a.addonName).join(", ")}
+                        </p>
+                      )}
+                      {/* Observações */}
+                      {item.notes && (
+                        <p className="text-xs italic mt-0.5 leading-snug" style={{ color: GRAY }}>
+                          Obs: {item.notes}
+                        </p>
+                      )}
+                      <p className="text-sm font-bold mt-1" style={{ color: PURPLE }}>
+                        R$ {((item.unitPrice + item.addonsTotal) * item.quantity).toFixed(2).replace(".", ",")}
                       </p>
                     </div>
                     {/* Controles de quantidade — botões 40x40px */}
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
+                          className="rounded-full border-2 flex items-center justify-center font-bold transition-colors hover:bg-purple-50 active:scale-95"
+                          style={{ borderColor: PURPLE, color: PURPLE, width: 32, height: 32 }}
+                          aria-label="Diminuir"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span
+                          className="font-black text-base text-center"
+                          style={{ color: DARK, minWidth: 20 }}
+                        >
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
+                          className="rounded-full flex items-center justify-center font-bold text-white transition-opacity hover:opacity-80 active:scale-95"
+                          style={{ background: PURPLE, width: 32, height: 32 }}
+                          aria-label="Aumentar"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+                      {/* Botão remover */}
                       <button
-                        onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                        className="rounded-full border-2 flex items-center justify-center font-bold transition-colors hover:bg-purple-50 active:scale-95"
-                        style={{ borderColor: PURPLE, color: PURPLE, width: 40, height: 40 }}
-                        aria-label="Diminuir"
+                        onClick={() => removeItem(item.cartItemId)}
+                        className="rounded-full flex items-center justify-center transition-colors hover:bg-red-50 active:scale-95"
+                        style={{ color: "oklch(0.55 0.22 25)", width: 32, height: 32 }}
+                        aria-label="Remover item"
                       >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <span
-                        className="font-black text-base text-center"
-                        style={{ color: DARK, minWidth: 24 }}
-                      >
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                        className="rounded-full flex items-center justify-center font-bold text-white transition-opacity hover:opacity-80 active:scale-95"
-                        style={{ background: PURPLE, width: 40, height: 40 }}
-                        aria-label="Aumentar"
-                      >
-                        <Plus className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                    {/* Botão remover — 40x40px */}
-                    <button
-                      onClick={() => removeItem(item.productId)}
-                      className="rounded-full flex items-center justify-center transition-colors hover:bg-red-50 active:scale-95 flex-shrink-0"
-                      style={{ color: "oklch(0.55 0.22 25)", width: 40, height: 40 }}
-                      aria-label="Remover item"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
                   </div>
                 ))}
               </div>

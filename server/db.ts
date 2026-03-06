@@ -1,6 +1,6 @@
 import { eq, desc, gte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, InsertProduct, users, products, orders, orderItems, customers, deliveryPersons, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer, DeliveryPerson, InsertDeliveryPerson } from "../drizzle/schema";
+import { InsertUser, InsertProduct, users, products, orders, orderItems, customers, deliveryPersons, addonCategories, addons, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer, DeliveryPerson, InsertDeliveryPerson, AddonCategory, Addon, InsertAddonCategory, InsertAddon } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -433,4 +433,118 @@ export async function getAllCustomers(): Promise<Customer[]> {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(customers).orderBy(desc(customers.createdAt));
+}
+
+// ─── Addon Categories & Addons ──────────────────────────────────────────────
+
+export type ProductWithAddons = Product & {
+  addonCategories: Array<AddonCategory & { addons: Addon[] }>;
+};
+
+export async function getProductWithAddons(productId: number): Promise<ProductWithAddons | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  const productResult = await db.select().from(products).where(eq(products.id, productId)).limit(1);
+  if (productResult.length === 0) return null;
+
+  const categories = await db
+    .select()
+    .from(addonCategories)
+    .where(eq(addonCategories.productId, productId))
+    .orderBy(addonCategories.sortOrder);
+
+  const categoryIds = categories.map((c) => c.id);
+  let allAddons: Addon[] = [];
+  if (categoryIds.length > 0) {
+    allAddons = await db
+      .select()
+      .from(addons)
+      .where(sql`${addons.categoryId} IN (${sql.join(categoryIds.map((id) => sql`${id}`), sql`, `)})`)
+      .orderBy(addons.sortOrder);
+  }
+
+  return {
+    ...productResult[0],
+    addonCategories: categories.map((cat) => ({
+      ...cat,
+      addons: allAddons.filter((a) => a.categoryId === cat.id && a.available),
+    })),
+  };
+}
+
+export async function getAddonCategoriesByProduct(productId: number): Promise<Array<AddonCategory & { addons: Addon[] }>> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const categories = await db
+    .select()
+    .from(addonCategories)
+    .where(eq(addonCategories.productId, productId))
+    .orderBy(addonCategories.sortOrder);
+
+  const categoryIds = categories.map((c) => c.id);
+  let allAddons: Addon[] = [];
+  if (categoryIds.length > 0) {
+    allAddons = await db
+      .select()
+      .from(addons)
+      .where(sql`${addons.categoryId} IN (${sql.join(categoryIds.map((id) => sql`${id}`), sql`, `)})`)
+      .orderBy(addons.sortOrder);
+  }
+
+  return categories.map((cat) => ({
+    ...cat,
+    addons: allAddons.filter((a) => a.categoryId === cat.id),
+  }));
+}
+
+export async function createAddonCategory(
+  data: Omit<InsertAddonCategory, "id" | "createdAt">
+): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(addonCategories).values([data]);
+  return (result as { insertId: number }).insertId;
+}
+
+export async function updateAddonCategory(
+  id: number,
+  data: Partial<Omit<InsertAddonCategory, "id" | "createdAt" | "productId">>
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(addonCategories).set(data).where(eq(addonCategories.id, id));
+}
+
+export async function deleteAddonCategory(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  // Delete addons first (cascade manual)
+  await db.delete(addons).where(eq(addons.categoryId, id));
+  await db.delete(addonCategories).where(eq(addonCategories.id, id));
+}
+
+export async function createAddon(
+  data: Omit<InsertAddon, "id" | "createdAt">
+): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(addons).values([data]);
+  return (result as { insertId: number }).insertId;
+}
+
+export async function updateAddon(
+  id: number,
+  data: Partial<Omit<InsertAddon, "id" | "createdAt" | "categoryId">>
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(addons).set(data).where(eq(addons.id, id));
+}
+
+export async function deleteAddon(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(addons).where(eq(addons.id, id));
 }
