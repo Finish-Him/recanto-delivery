@@ -178,6 +178,11 @@ export default function Checkout() {
   };
 
   if (step === "done") {
+    // Redirecionar automaticamente para a página de rastreamento após 3 segundos
+    setTimeout(() => {
+      if (orderId) navigate(`/pedido/${orderId}`);
+    }, 3000);
+
     return (
       <div className="min-h-screen flex flex-col" style={{ background: WHITE }}>
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4 text-center">
@@ -207,13 +212,26 @@ export default function Checkout() {
           >
             Tempo estimado: <strong style={{ color: PURPLE }}>30–45 minutos</strong>
           </div>
-          <Button
-            onClick={() => navigate("/")}
-            className="font-black px-10 py-5 rounded-2xl text-white shadow-lg"
-            style={{ background: PURPLE }}
-          >
-            Fazer Novo Pedido
-          </Button>
+          <p className="text-xs font-semibold" style={{ color: GRAY }}>
+            Redirecionando para o rastreamento em 3 segundos...
+          </p>
+          <div className="flex flex-col gap-3 w-full max-w-xs">
+            <Button
+              onClick={() => orderId && navigate(`/pedido/${orderId}`)}
+              className="font-black px-10 py-5 rounded-2xl text-white shadow-lg"
+              style={{ background: PURPLE }}
+            >
+              Acompanhar Pedido
+            </Button>
+            <Button
+              onClick={() => navigate("/")}
+              variant="outline"
+              className="font-black px-10 py-5 rounded-2xl border-2"
+              style={{ borderColor: PURPLE, color: PURPLE }}
+            >
+              Fazer Novo Pedido
+            </Button>
+          </div>
         </div>
       </div>
     );

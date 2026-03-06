@@ -316,6 +316,37 @@ export default function Home() {
       )}
 
       <CartDrawer />
+
+      {/* Rodapé */}
+      <footer
+        className="mt-12 py-6 px-4 text-center"
+        style={{ borderTop: `1px solid oklch(0.92 0.03 305)` }}
+      >
+        <p className="text-xs font-semibold mb-2" style={{ color: "oklch(0.65 0.05 305)" }}>
+          © {new Date().getFullYear()} Recanto do Açaí — Todos os direitos reservados
+        </p>
+        <p className="text-xs" style={{ color: "oklch(0.75 0.03 305)" }}>
+          Pedidos e dúvidas:{" "}
+          <a
+            href="https://wa.me/5521974666669"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold underline underline-offset-2"
+            style={{ color: PURPLE }}
+          >
+            (21) 97466-6669
+          </a>
+        </p>
+        <div className="mt-4">
+          <a
+            href="/login"
+            className="text-xs font-semibold opacity-30 hover:opacity-60 transition-opacity"
+            style={{ color: "oklch(0.45 0.03 305)" }}
+          >
+            • área restrita
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }

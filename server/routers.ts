@@ -129,6 +129,26 @@ export const appRouter = router({
         return order;
       }),
 
+    // Rota pública para o cliente rastrear o próprio pedido (retorna apenas dados seguros)
+    track: publicProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        const order = await getOrderById(input.id);
+        if (!order) throw new TRPCError({ code: "NOT_FOUND", message: "Pedido não encontrado." });
+        // Retorna apenas os campos necessários para o cliente (sem dados sensíveis)
+        return {
+          id: order.id,
+          status: order.status,
+          customerName: order.customerName,
+          totalAmount: order.totalAmount,
+          deliveryFee: order.deliveryFee,
+          paymentMethod: order.paymentMethod,
+          createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+          items: order.items,
+        };
+      }),
+
     updateStatus: adminProcedure
       .input(
         z.object({

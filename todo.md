@@ -66,3 +66,10 @@
 ## Correções e Melhorias
 - [x] Corrigir imagem do Açaí Tradicional (estava mostrando prato asiático)
 - [x] Criar página de login dedicada /login para o painel admin
+
+## Rodapé e Rastreamento
+- [x] Link discreto "Painel Admin" no rodapé da página Home
+- [x] API pública de consulta de status do pedido por ID
+- [x] Página /pedido/:id com rastreamento em tempo real (polling)
+- [x] Timeline visual de status (Pendente → Confirmado → Em Preparo → Saiu → Entregue)
+- [x] Redirecionar automaticamente para /pedido/:id após finalizar o checkout
