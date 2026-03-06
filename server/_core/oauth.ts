@@ -44,7 +44,11 @@ export function registerOAuthRoutes(app: Express) {
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
-      res.redirect(302, "/");
+      // Redireciona para /admin se o usuário for admin, caso contrário para /
+      const { getUserByOpenId } = await import("../db");
+      const loggedUser = await getUserByOpenId(userInfo.openId);
+      const redirectTo = loggedUser?.role === "admin" ? "/admin" : "/";
+      res.redirect(302, redirectTo);
     } catch (error) {
       console.error("[OAuth] Callback failed", error);
       res.status(500).json({ error: "OAuth callback failed" });

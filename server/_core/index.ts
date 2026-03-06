@@ -33,30 +33,32 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
 
-  // ─── Rota de login de teste (apenas em desenvolvimento) ──────────────────────
-  if (process.env.NODE_ENV !== "production") {
-    app.post("/api/dev/login-as-admin", async (req, res) => {
-      try {
-        const token = await sdk.createSessionToken("test-admin-recanto", {
-          name: "Admin Recanto",
-        });
-        const cookieOptions = getSessionCookieOptions(req);
-        res.cookie(COOKIE_NAME, token, {
-          ...cookieOptions,
-          maxAge: 24 * 60 * 60 * 1000, // 24h
-        });
-        res.json({ success: true, message: "Logado como Admin Recanto" });
-      } catch (err) {
-        res.status(500).json({ success: false, error: String(err) });
-      }
-    });
-  }
+  // ─── Rota de login rápido para o painel admin ────────────────────────────────
+  // Cria uma sessão para o usuário admin de teste (test-admin-recanto)
+  app.post("/api/dev/login-as-admin", async (req, res) => {
+    try {
+      const token = await sdk.createSessionToken("test-admin-recanto", {
+        name: "Admin Recanto",
+      });
+      const cookieOptions = getSessionCookieOptions(req);
+      res.cookie(COOKIE_NAME, token, {
+        ...cookieOptions,
+        maxAge: 24 * 60 * 60 * 1000, // 24h
+      });
+      res.json({ success: true, message: "Logado como Admin Recanto" });
+    } catch (err) {
+      res.status(500).json({ success: false, error: String(err) });
+    }
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",
@@ -65,6 +67,7 @@ async function startServer() {
       createContext,
     })
   );
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

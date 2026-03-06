@@ -73,3 +73,7 @@
 - [x] Página /pedido/:id com rastreamento em tempo real (polling)
 - [x] Timeline visual de status (Pendente → Confirmado → Em Preparo → Saiu → Entregue)
 - [x] Redirecionar automaticamente para /pedido/:id após finalizar o checkout
+
+## Bugs de Login
+- [x] Corrigir erro no login admin/admin (rota /api/dev/login-as-admin)
+- [x] Corrigir redirecionamento OAuth Manus (deve ir para /admin após login)

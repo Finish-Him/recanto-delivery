@@ -1,0 +1,16 @@
+{
+  "query": "UPDATE users SET role = 'admin' WHERE openId = 'test-admin-recanto'; SELECT id, openId, name, role FROM users WHERE openId = 'test-admin-recanto';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3RJAdkxkLcRXBfg.fe15c385d774 --database Z28cUTNS5S5j4gtNT63Tte --execute UPDATE users SET role = 'admin' WHERE openId = 'test-admin-recanto'; SELECT id, openId, name, role FROM users WHERE openId = 'test-admin-recanto';",
+  "rows": [
+    {
+      "id": "1",
+      "openId": "test-admin-recanto",
+      "name": "Admin Recanto",
+      "role": "admin"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\trole\n1\ttest-admin-recanto\tAdmin Recanto\tadmin\n",
+  "stderr": "",
+  "execution_time_ms": 65
+}
