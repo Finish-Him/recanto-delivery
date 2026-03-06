@@ -12,6 +12,9 @@ import {
   updateOrderStatus,
   updateOrderStripePaymentIntentId,
   seedProductsIfEmpty,
+  createCustomer,
+  getCustomerByPhone,
+  getAllCustomers,
 } from "./db";
 import { notifyOwner } from "./_core/notification";
 import Stripe from "stripe";
@@ -167,6 +170,48 @@ export const appRouter = router({
         await updateOrderStatus(input.id, input.status);
         return { success: true };
       }),
+  }),
+
+  // ─── Customers ─────────────────────────────────────────────────────────────
+  customers: router({
+    register: publicProcedure
+      .input(
+        z.object({
+          name: z.string().min(2, "Nome deve ter ao menos 2 caracteres"),
+          phone: z.string().min(10, "Telefone inválido"),
+          email: z.string().email("E-mail inválido").optional().or(z.literal("")),
+          address: z.string().optional(),
+          neighborhood: z.string().optional(),
+          complement: z.string().optional(),
+          birthDate: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const existing = await getCustomerByPhone(input.phone);
+        if (existing) {
+          throw new TRPCError({ code: "CONFLICT", message: "Este telefone já está cadastrado." });
+        }
+        const customerId = await createCustomer({
+          name: input.name,
+          phone: input.phone,
+          email: input.email || null,
+          address: input.address || null,
+          neighborhood: input.neighborhood || null,
+          complement: input.complement || null,
+          birthDate: input.birthDate || null,
+        });
+        return { customerId, success: true };
+      }),
+
+    getByPhone: publicProcedure
+      .input(z.object({ phone: z.string() }))
+      .query(async ({ input }) => {
+        return getCustomerByPhone(input.phone);
+      }),
+
+    list: adminProcedure.query(async () => {
+      return getAllCustomers();
+    }),
   }),
 
   // ─── Stripe ──────────────────────────────────────────────────────────────────

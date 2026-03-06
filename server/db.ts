@@ -1,6 +1,6 @@
 import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, products, orders, orderItems, InsertOrder, InsertOrderItem, Order, OrderItem, Product } from "../drizzle/schema";
+import { InsertUser, users, products, orders, orderItems, customers, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -181,4 +181,28 @@ export async function updateOrderStripePaymentIntentId(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(orders).set({ stripePaymentIntentId }).where(eq(orders.id, id));
+}
+
+// ─── Customers ──────────────────────────────────────────────────────────────────
+
+export async function createCustomer(
+  data: Omit<InsertCustomer, "id" | "createdAt" | "updatedAt" | "totalOrders">
+): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(customers).values(data);
+  return (result as { insertId: number }).insertId;
+}
+
+export async function getCustomerByPhone(phone: string): Promise<Customer | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(customers).where(eq(customers.phone, phone)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getAllCustomers(): Promise<Customer[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(customers).orderBy(desc(customers.createdAt));
 }

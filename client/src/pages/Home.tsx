@@ -368,13 +368,29 @@ export default function Home() {
             (21) 98174-9450
           </a>
         </p>
-        <div className="mt-4">
+        <div className="mt-4 flex items-center justify-center gap-4 flex-wrap">
+          <a
+            href="/cadastro"
+            className="text-xs font-bold underline underline-offset-2 transition-opacity hover:opacity-80"
+            style={{ color: PURPLE }}
+          >
+            Criar conta
+          </a>
+          <span className="text-xs" style={{ color: "oklch(0.75 0.03 305)" }}>•</span>
+          <a
+            href="/instalar"
+            className="text-xs font-bold underline underline-offset-2 transition-opacity hover:opacity-80"
+            style={{ color: PURPLE }}
+          >
+            Instalar App
+          </a>
+          <span className="text-xs" style={{ color: "oklch(0.75 0.03 305)" }}>•</span>
           <a
             href="/login"
             className="text-xs font-semibold opacity-30 hover:opacity-60 transition-opacity"
             style={{ color: "oklch(0.45 0.03 305)" }}
           >
-            • área restrita
+            área restrita
           </a>
         </div>
       </footer>

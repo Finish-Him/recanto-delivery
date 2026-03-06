@@ -79,12 +79,20 @@
 - [x] Corrigir redirecionamento OAuth Manus (deve ir para /admin após login)
 
 ## Otimização Mobile
-- [ ] Home: ícones maiores, espaçamento touch-friendly, header compacto
-- [ ] CartDrawer: botões e ícones com área de toque adequada
-- [ ] AdminLogin: formulário centralizado e bem enquadrado no mobile
-- [ ] Checkout: campos de formulário com altura mínima 48px, labels legíveis
-- [ ] OrderTracking: timeline vertical responsiva, texto legível
-- [ ] AdminDashboard: sidebar colapsável, cards de pedido otimizados para mobile
+- [x] Home: ícones maiores, espaçamento touch-friendly, header compacto
+- [x] CartDrawer: botões e ícones com área de toque adequada
+- [x] AdminLogin: formulário centralizado e bem enquadrado no mobile
+- [x] Checkout: campos de formulário com altura mínima 48px, labels legíveis
+- [x] OrderTracking: timeline vertical responsiva, texto legível
+- [x] AdminDashboard: sidebar colapsável, cards de pedido otimizados para mobile
 
 ## Dados de Contato
 - [x] Atualizar número de WhatsApp para (21) 98174-9450 em todas as telas
+
+## PWA e Cadastro
+- [x] Gerar favicon.ico e ícones PWA (192x192, 512x512) com o logo do Recanto
+- [x] Configurar manifest.json com nome, cores e ícones da marca
+- [x] Registrar service worker para suporte PWA offline
+- [x] Criar página de cadastro de clientes /cadastro
+- [x] Criar página de instalação PWA /instalar com instruções iOS e Android
+- [x] Adicionar link "Instalar App" no header/rodapé

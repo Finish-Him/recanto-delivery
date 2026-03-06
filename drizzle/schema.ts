@@ -95,3 +95,21 @@ export const orderItems = mysqlTable("orderItems", {
 
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = typeof orderItems.$inferInsert;
+
+// Tabela de clientes cadastrados (sem OAuth, cadastro simples)
+export const customers = mysqlTable("customers", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull().unique(),
+  email: varchar("email", { length: 320 }),
+  address: text("address"),
+  neighborhood: varchar("neighborhood", { length: 255 }),
+  complement: varchar("complement", { length: 255 }),
+  birthDate: varchar("birthDate", { length: 10 }),
+  totalOrders: int("totalOrders").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Customer = typeof customers.$inferSelect;
+export type InsertCustomer = typeof customers.$inferInsert;

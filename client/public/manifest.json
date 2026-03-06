@@ -1,0 +1,60 @@
+{
+  "name": "Recanto do Açaí",
+  "short_name": "Recanto",
+  "description": "Peça seu açaí fresquinho com entrega rápida!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f0ff",
+  "theme_color": "#6b21a8",
+  "orientation": "portrait-primary",
+  "lang": "pt-BR",
+  "categories": ["food", "shopping"],
+  "icons": [
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-72x72_99749edf.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-96x96_265f14a0.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-144x144_b0fcff09.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-152x152_8f68a045.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-192x192_6aa59a2c.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-384x384_114d46e7.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-512x512_200b31d9.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-512x512_200b31d9.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Cardápio do Recanto do Açaí"
+    }
+  ]
+}

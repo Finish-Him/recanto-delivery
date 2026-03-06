@@ -10,6 +10,8 @@ import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import OrderTracking from "./pages/OrderTracking";
+import Register from "./pages/Register";
+import InstallApp from "./pages/InstallApp";
 
 function Router() {
   return (
@@ -19,6 +21,8 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/login" component={AdminLogin} />
       <Route path="/pedido/:id" component={OrderTracking} />
+      <Route path="/cadastro" component={Register} />
+      <Route path="/instalar" component={InstallApp} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
