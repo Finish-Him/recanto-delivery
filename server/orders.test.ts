@@ -17,12 +17,22 @@ vi.mock("./db", () => ({
       updatedAt: new Date(),
     },
   ]),
+  getAllProductsAdmin: vi.fn().mockResolvedValue([]),
+  createProduct: vi.fn().mockResolvedValue(10),
+  updateProduct: vi.fn().mockResolvedValue(undefined),
+  toggleProductAvailability: vi.fn().mockResolvedValue(undefined),
   seedProductsIfEmpty: vi.fn().mockResolvedValue(undefined),
   createOrder: vi.fn().mockResolvedValue(42),
   getAllOrders: vi.fn().mockResolvedValue([]),
   getOrderById: vi.fn().mockResolvedValue(null),
   updateOrderStatus: vi.fn().mockResolvedValue(undefined),
   updateOrderStripePaymentIntentId: vi.fn().mockResolvedValue(undefined),
+  getOrderStatsByDay: vi.fn().mockResolvedValue([]),
+  getOrderStatsByPayment: vi.fn().mockResolvedValue([]),
+  getOrderSummaryStats: vi.fn().mockResolvedValue({ totalOrders: 0, totalRevenue: 0, avgTicket: 0, pendingOrders: 0 }),
+  createCustomer: vi.fn().mockResolvedValue(5),
+  getCustomerByPhone: vi.fn().mockResolvedValue(null),
+  getAllCustomers: vi.fn().mockResolvedValue([]),
 }));
 
 // Mock das notificações
@@ -171,6 +181,44 @@ describe("orders.create", () => {
         ],
       })
     ).rejects.toThrow();
+  });
+});
+
+describe("products.listAdmin", () => {
+  it("deve retornar lista de produtos para admin", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const products = await caller.products.listAdmin();
+    expect(Array.isArray(products)).toBe(true);
+  });
+
+  it("deve bloquear acesso para não-admin", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(caller.products.listAdmin()).rejects.toThrow();
+  });
+});
+
+describe("products.create (admin)", () => {
+  it("deve criar um produto e retornar o ID", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const result = await caller.products.create({
+      name: "Açaí KitKat 500ml",
+      description: "Com pedacinhos de KitKat",
+      price: "22.90",
+      category: "açaí",
+      available: true,
+    });
+    expect(result.productId).toBe(10);
+  });
+});
+
+describe("reports.summary (admin)", () => {
+  it("deve retornar métricas resumidas", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const summary = await caller.reports.summary();
+    expect(summary).toHaveProperty("totalOrders");
+    expect(summary).toHaveProperty("totalRevenue");
+    expect(summary).toHaveProperty("avgTicket");
+    expect(summary).toHaveProperty("pendingOrders");
   });
 });
 

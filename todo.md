@@ -102,3 +102,22 @@
 - [x] Atualizar API/schema para salvar valor do troco no pedido
 - [x] Remover imagens de todos os produtos (placeholder visual limpo)
 - [x] Expandir sidebar do admin com menus organizados por seção
+
+## Admin - Cardápio (CRUD de Produtos)
+- [x] API: criar produto (adminProcedure)
+- [x] API: atualizar produto (adminProcedure)
+- [x] API: ativar/desativar produto (adminProcedure)
+- [x] Página /admin/cardapio com lista de produtos
+- [x] Modal/formulário para adicionar novo produto
+- [x] Modal/formulário para editar produto existente
+- [x] Toggle para ativar/desativar produto
+- [x] Remover placeholder "Em breve" do item Cardápio no sidebar
+
+## Admin - Relatórios de Vendas
+- [x] API: dados de pedidos agrupados por dia (adminProcedure)
+- [x] API: faturamento total e métricas gerais (adminProcedure)
+- [x] Página /admin/relatorios com gráficos
+- [x] Gráfico de pedidos por dia (últimos 7 e 30 dias)
+- [x] Cards de métricas: total de pedidos, faturamento, ticket médio
+- [x] Gráfico de distribuição por forma de pagamento
+- [x] Remover placeholder "Em breve" do item Relatórios no sidebar

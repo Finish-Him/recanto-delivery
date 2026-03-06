@@ -1,6 +1,6 @@
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, gte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, products, orders, orderItems, customers, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer } from "../drizzle/schema";
+import { InsertUser, InsertProduct, users, products, orders, orderItems, customers, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -97,6 +97,36 @@ export async function getAllProducts(): Promise<Product[]> {
   return db.select().from(products).where(eq(products.available, true));
 }
 
+export async function getAllProductsAdmin(): Promise<Product[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(products).orderBy(desc(products.createdAt));
+}
+
+export async function createProduct(
+  data: Omit<InsertProduct, "id" | "createdAt" | "updatedAt">
+): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(products).values([data]);
+  return (result as { insertId: number }).insertId;
+}
+
+export async function updateProduct(
+  id: number,
+  data: Partial<Omit<InsertProduct, "id" | "createdAt" | "updatedAt">>
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(products).set(data).where(eq(products.id, id));
+}
+
+export async function toggleProductAvailability(id: number, available: boolean): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(products).set({ available }).where(eq(products.id, id));
+}
+
 export async function seedProductsIfEmpty(): Promise<void> {
   const db = await getDb();
   if (!db) return;
@@ -181,6 +211,90 @@ export async function updateOrderStripePaymentIntentId(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(orders).set({ stripePaymentIntentId }).where(eq(orders.id, id));
+}
+
+// ─── Reports ────────────────────────────────────────────────────────────────
+
+export type DailyStat = { date: string; count: number; revenue: number };
+
+export async function getOrderStatsByDay(days: number): Promise<DailyStat[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const since = new Date();
+  since.setDate(since.getDate() - days);
+
+  const rows = await db
+    .select({
+      date: sql<string>`DATE(${orders.createdAt})`.as("date"),
+      count: sql<number>`COUNT(*)`.as("count"),
+      revenue: sql<number>`SUM(CAST(${orders.totalAmount} AS DECIMAL(10,2)))`.as("revenue"),
+    })
+    .from(orders)
+    .where(gte(orders.createdAt, since))
+    .groupBy(sql`DATE(${orders.createdAt})`)
+    .orderBy(sql`DATE(${orders.createdAt})`);
+
+  return rows.map((r) => ({
+    date: String(r.date),
+    count: Number(r.count),
+    revenue: Number(r.revenue),
+  }));
+}
+
+export type PaymentStat = { method: string; count: number; revenue: number };
+
+export async function getOrderStatsByPayment(): Promise<PaymentStat[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const rows = await db
+    .select({
+      method: orders.paymentMethod,
+      count: sql<number>`COUNT(*)`.as("count"),
+      revenue: sql<number>`SUM(CAST(${orders.totalAmount} AS DECIMAL(10,2)))`.as("revenue"),
+    })
+    .from(orders)
+    .groupBy(orders.paymentMethod);
+
+  return rows.map((r) => ({
+    method: String(r.method),
+    count: Number(r.count),
+    revenue: Number(r.revenue),
+  }));
+}
+
+export type SummaryStats = {
+  totalOrders: number;
+  totalRevenue: number;
+  avgTicket: number;
+  pendingOrders: number;
+};
+
+export async function getOrderSummaryStats(): Promise<SummaryStats> {
+  const db = await getDb();
+  if (!db) return { totalOrders: 0, totalRevenue: 0, avgTicket: 0, pendingOrders: 0 };
+
+  const [totals] = await db
+    .select({
+      totalOrders: sql<number>`COUNT(*)`,
+      totalRevenue: sql<number>`SUM(CAST(${orders.totalAmount} AS DECIMAL(10,2)))`,
+    })
+    .from(orders);
+
+  const [pending] = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(orders)
+    .where(eq(orders.status, "pendente"));
+
+  const total = Number(totals?.totalOrders ?? 0);
+  const revenue = Number(totals?.totalRevenue ?? 0);
+  return {
+    totalOrders: total,
+    totalRevenue: revenue,
+    avgTicket: total > 0 ? revenue / total : 0,
+    pendingOrders: Number(pending?.count ?? 0),
+  };
 }
 
 // ─── Customers ──────────────────────────────────────────────────────────────────

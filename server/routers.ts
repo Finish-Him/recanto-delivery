@@ -6,6 +6,10 @@ import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import {
   getAllProducts,
+  getAllProductsAdmin,
+  createProduct,
+  updateProduct,
+  toggleProductAvailability,
   getAllOrders,
   getOrderById,
   createOrder,
@@ -15,6 +19,9 @@ import {
   createCustomer,
   getCustomerByPhone,
   getAllCustomers,
+  getOrderStatsByDay,
+  getOrderStatsByPayment,
+  getOrderSummaryStats,
 } from "./db";
 import { notifyOwner } from "./_core/notification";
 import Stripe from "stripe";
@@ -50,15 +57,84 @@ export const appRouter = router({
     }),
   }),
 
-  // ─── Products ────────────────────────────────────────────────────────────────
+  // ─── Products ──────────────────────────────────────────────────────────────────────────────
   products: router({
     list: publicProcedure.query(async () => {
       await seedProductsIfEmpty();
       return getAllProducts();
     }),
+
+    listAdmin: adminProcedure.query(async () => {
+      return getAllProductsAdmin();
+    }),
+
+    create: adminProcedure
+      .input(
+        z.object({
+          name: z.string().min(2),
+          description: z.string().optional(),
+          price: z.string(),
+          imageUrl: z.string().optional(),
+          category: z.string().default("açaí"),
+          available: z.boolean().default(true),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const productId = await createProduct({
+          name: input.name,
+          description: input.description ?? null,
+          price: input.price,
+          imageUrl: input.imageUrl ?? null,
+          category: input.category,
+          available: input.available,
+        });
+        return { productId };
+      }),
+
+    update: adminProcedure
+      .input(
+        z.object({
+          id: z.number().int().positive(),
+          name: z.string().min(2).optional(),
+          description: z.string().optional(),
+          price: z.string().optional(),
+          imageUrl: z.string().optional().nullable(),
+          category: z.string().optional(),
+          available: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateProduct(id, data);
+        return { success: true };
+      }),
+
+    toggleAvailability: adminProcedure
+      .input(z.object({ id: z.number().int().positive(), available: z.boolean() }))
+      .mutation(async ({ input }) => {
+        await toggleProductAvailability(input.id, input.available);
+        return { success: true };
+      }),
   }),
 
-  // ─── Orders ──────────────────────────────────────────────────────────────────
+  // ─── Reports ──────────────────────────────────────────────────────────────────────────────
+  reports: router({
+    summary: adminProcedure.query(async () => {
+      return getOrderSummaryStats();
+    }),
+
+    byDay: adminProcedure
+      .input(z.object({ days: z.number().int().min(7).max(90).default(30) }))
+      .query(async ({ input }) => {
+        return getOrderStatsByDay(input.days);
+      }),
+
+    byPayment: adminProcedure.query(async () => {
+      return getOrderStatsByPayment();
+    }),
+  }),
+
+  // ─── Orders ──────────────────────────────────────────────────────────────────────────────
   orders: router({
     create: publicProcedure
       .input(

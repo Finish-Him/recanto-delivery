@@ -9,6 +9,8 @@ import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
+import AdminCardapio from "./pages/AdminCardapio";
+import AdminRelatorios from "./pages/AdminRelatorios";
 import OrderTracking from "./pages/OrderTracking";
 import Register from "./pages/Register";
 import InstallApp from "./pages/InstallApp";
@@ -19,6 +21,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/cardapio" component={AdminCardapio} />
+      <Route path="/admin/relatorios" component={AdminRelatorios} />
       <Route path="/login" component={AdminLogin} />
       <Route path="/pedido/:id" component={OrderTracking} />
       <Route path="/cadastro" component={Register} />

@@ -41,7 +41,7 @@ const menuGroups: MenuGroup[] = [
   {
     title: "Gestão",
     items: [
-      { icon: UtensilsCrossed, label: "Cardápio", path: "/admin/cardapio", placeholder: true },
+      { icon: UtensilsCrossed, label: "Cardápio", path: "/admin/cardapio" },
       { icon: Users, label: "Clientes", path: "/admin/clientes", placeholder: true },
       { icon: Package, label: "Estoque", path: "/admin/estoque", placeholder: true },
     ],
@@ -49,7 +49,7 @@ const menuGroups: MenuGroup[] = [
   {
     title: "Análise",
     items: [
-      { icon: BarChart3, label: "Relatórios", path: "/admin/relatorios", placeholder: true },
+      { icon: BarChart3, label: "Relatórios", path: "/admin/relatorios" },
     ],
   },
   {
