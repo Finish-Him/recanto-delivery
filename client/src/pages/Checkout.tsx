@@ -97,7 +97,7 @@ function CheckoutHeader({ title, onBack }: { title: string; onBack: () => void }
 }
 
 export default function Checkout() {
-  const { items, totalAmount, clearCart } = useCart();
+  const { items, totalAmount, grandTotal, deliveryFee, clearCart } = useCart();
   const [, navigate] = useLocation();
 
   const [form, setForm] = useState({
@@ -154,14 +154,15 @@ export default function Checkout() {
         neighborhood: form.neighborhood || undefined,
         complement: form.complement || undefined,
         paymentMethod: form.paymentMethod,
-        totalAmount: totalAmount.toFixed(2),
+        deliveryFee: deliveryFee.toFixed(2),
+        totalAmount: grandTotal.toFixed(2),
         notes: form.notes || undefined,
         items: orderItems,
       });
       setOrderId(result.orderId);
       if (form.paymentMethod === "cartao_online") {
         const pi = await createPaymentIntent.mutateAsync({
-          amount: Math.round(totalAmount * 100),
+          amount: Math.round(grandTotal * 100),
           orderId: result.orderId,
           customerName: form.customerName,
         });
@@ -229,7 +230,7 @@ export default function Checkout() {
           >
             <p className="font-bold text-sm mb-1" style={{ color: GRAY }}>Total a pagar</p>
             <p className="font-black text-3xl mb-6" style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}>
-              R$ {totalAmount.toFixed(2).replace(".", ",")}
+              R$ {grandTotal.toFixed(2).replace(".", ",")}
             </p>
             <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe" } }}>
               <StripePaymentForm clientSecret={clientSecret} onSuccess={() => { clearCart(); setStep("done"); }} />
@@ -405,11 +406,21 @@ export default function Checkout() {
                     </div>
                   ))}
                 </div>
-                <div className="border-t pt-3 flex justify-between items-center" style={{ borderColor: BORDER }}>
-                  <span className="font-bold" style={{ color: DARK }}>Total</span>
-                  <span className="font-black text-2xl" style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}>
-                    R$ {totalAmount.toFixed(2).replace(".", ",")}
-                  </span>
+                <div className="border-t pt-3 space-y-2" style={{ borderColor: BORDER }}>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-sm" style={{ color: GRAY }}>Subtotal</span>
+                    <span className="font-semibold text-sm" style={{ color: GRAY }}>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-sm" style={{ color: GRAY }}>Taxa de entrega</span>
+                    <span className="font-semibold text-sm" style={{ color: GRAY }}>R$ {deliveryFee.toFixed(2).replace(".", ",")}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-1 border-t" style={{ borderColor: BORDER }}>
+                    <span className="font-black" style={{ color: DARK }}>Total</span>
+                    <span className="font-black text-2xl" style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}>
+                      R$ {grandTotal.toFixed(2).replace(".", ",")}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

@@ -20,7 +20,7 @@ const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cU
 
 export default function Home() {
   const { data: products, isLoading } = trpc.products.list.useQuery();
-  const { addItem, updateQuantity, items, totalItems, totalAmount, setIsOpen } = useCart();
+  const { addItem, updateQuantity, items, totalItems, totalAmount, grandTotal, deliveryFee, setIsOpen } = useCart();
 
   const getItemQuantity = (productId: number) => {
     const item = items.find((i) => i.productId === productId);
@@ -309,7 +309,7 @@ export default function Home() {
             </div>
             <span className="flex-1 text-left font-black">Ver Carrinho</span>
             <span className="font-black" style={{ color: GOLD }}>
-              R$ {totalAmount.toFixed(2).replace(".", ",")}
+              R$ {grandTotal.toFixed(2).replace(".", ",")}
             </span>
           </button>
         </div>

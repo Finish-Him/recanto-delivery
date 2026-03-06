@@ -13,7 +13,7 @@ const BORDER = "oklch(0.88 0.04 305)";
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/recanto-logo_f14240c4.jpg";
 
 export function CartDrawer() {
-  const { items, isOpen, setIsOpen, updateQuantity, removeItem, totalAmount, totalItems } =
+  const { items, isOpen, setIsOpen, updateQuantity, removeItem, totalAmount, grandTotal, deliveryFee, totalItems } =
     useCart();
   const [, navigate] = useLocation();
 
@@ -136,16 +136,19 @@ export function CartDrawer() {
               className="p-4 space-y-3 border-t"
               style={{ borderColor: BORDER }}
             >
-              <div className="flex justify-between items-center px-1">
-                <span className="font-bold text-base" style={{ color: GRAY }}>
-                  Total do pedido
-                </span>
-                <span
-                  className="font-black text-2xl"
-                  style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}
-                >
-                  R$ {totalAmount.toFixed(2).replace(".", ",")}
-                </span>
+              <div className="space-y-2 px-1">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-sm" style={{ color: GRAY }}>Subtotal</span>
+                  <span className="font-bold text-sm" style={{ color: GRAY }}>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-sm" style={{ color: GRAY }}>Taxa de entrega</span>
+                  <span className="font-bold text-sm" style={{ color: GRAY }}>R$ {deliveryFee.toFixed(2).replace(".", ",")}</span>
+                </div>
+                <div className="flex justify-between items-center pt-1 border-t" style={{ borderColor: BORDER }}>
+                  <span className="font-black text-base" style={{ color: DARK }}>Total</span>
+                  <span className="font-black text-2xl" style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}>R$ {grandTotal.toFixed(2).replace(".", ",")}</span>
+                </div>
               </div>
               <Button
                 onClick={handleCheckout}

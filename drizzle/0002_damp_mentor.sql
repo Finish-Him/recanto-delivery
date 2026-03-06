@@ -1,0 +1,1 @@
+ALTER TABLE `orders` ADD `deliveryFee` decimal(10,2) DEFAULT '4.90' NOT NULL;

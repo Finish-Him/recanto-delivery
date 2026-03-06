@@ -55,3 +55,10 @@
 - [x] Redesenhar carrinho (drawer) com nova identidade
 - [x] Redesenhar checkout com nova identidade
 - [x] Redesenhar dashboard admin com nova identidade
+
+## Novos Produtos e Frete
+- [x] Inserir produtos: Açaí de Garrafa 300ml, Açaí de Garrafa 500ml, Açaí de KitKat 500ml, Açaí Tradicional 300ml, Açaí Tradicional 500ml, Combo Irresístível
+- [x] Adicionar taxa de frete R$4,90 no schema (deliveryFee)
+- [x] Exibir frete no carrinho e no checkout
+- [x] Incluir frete no total do pedido
+- [x] Configurar acesso admin para testes

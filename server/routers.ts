@@ -72,6 +72,7 @@ export const appRouter = router({
             "cartao_credito",
             "cartao_online",
           ]),
+          deliveryFee: z.string().default("4.90"),
           totalAmount: z.string(),
           notes: z.string().optional(),
           items: z.array(orderItemSchema).min(1),
@@ -88,6 +89,7 @@ export const appRouter = router({
             neighborhood: orderData.neighborhood ?? null,
             complement: orderData.complement ?? null,
             paymentMethod: orderData.paymentMethod,
+            deliveryFee: orderData.deliveryFee ?? "4.90",
             totalAmount: orderData.totalAmount,
             notes: orderData.notes ?? null,
             status: "pendente",
@@ -109,7 +111,7 @@ export const appRouter = router({
 
         await notifyOwner({
           title: `\uD83D\uDEF5 Novo pedido #${orderId} - ${orderData.customerName}`,
-          content: `**Pedido #${orderId}**\n\n**Cliente:** ${orderData.customerName}\n**Telefone:** ${orderData.customerPhone || "Não informado"}\n**Endereço:** ${orderData.address}${orderData.neighborhood ? `, ${orderData.neighborhood}` : ""}${orderData.complement ? ` - ${orderData.complement}` : ""}\n\n**Itens:** ${itemsSummary}\n\n**Total:** R$ ${orderData.totalAmount}\n**Pagamento:** ${paymentLabels[orderData.paymentMethod] || orderData.paymentMethod}${orderData.notes ? `\n\n**Observações:** ${orderData.notes}` : ""}`,
+          content: `**Pedido #${orderId}**\n\n**Cliente:** ${orderData.customerName}\n**Telefone:** ${orderData.customerPhone || "Não informado"}\n**Endereço:** ${orderData.address}${orderData.neighborhood ? `, ${orderData.neighborhood}` : ""}${orderData.complement ? ` - ${orderData.complement}` : ""}\n\n**Itens:** ${itemsSummary}\n**Frete:** R$ ${orderData.deliveryFee}\n\n**Total:** R$ ${orderData.totalAmount}\n**Pagamento:** ${paymentLabels[orderData.paymentMethod] || orderData.paymentMethod}${orderData.notes ? `\n\n**Observações:** ${orderData.notes}` : ""}`,
         });
 
         return { orderId };

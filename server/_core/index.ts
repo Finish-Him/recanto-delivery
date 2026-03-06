@@ -7,6 +7,9 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { sdk } from "./sdk";
+import { COOKIE_NAME } from "@shared/const";
+import { getSessionCookieOptions } from "./cookies";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -35,6 +38,25 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+
+  // ─── Rota de login de teste (apenas em desenvolvimento) ──────────────────────
+  if (process.env.NODE_ENV !== "production") {
+    app.post("/api/dev/login-as-admin", async (req, res) => {
+      try {
+        const token = await sdk.createSessionToken("test-admin-recanto", {
+          name: "Admin Recanto",
+        });
+        const cookieOptions = getSessionCookieOptions(req);
+        res.cookie(COOKIE_NAME, token, {
+          ...cookieOptions,
+          maxAge: 24 * 60 * 60 * 1000, // 24h
+        });
+        res.json({ success: true, message: "Logado como Admin Recanto" });
+      } catch (err) {
+        res.status(500).json({ success: false, error: String(err) });
+      }
+    });
+  }
   // tRPC API
   app.use(
     "/api/trpc",

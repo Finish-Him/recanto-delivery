@@ -7,6 +7,8 @@ export type CartItem = {
   quantity: number;
 };
 
+export const DELIVERY_FEE = 4.90;
+
 type CartContextType = {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">) => void;
@@ -14,7 +16,9 @@ type CartContextType = {
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
-  totalAmount: number;
+  totalAmount: number;  // subtotal sem frete
+  grandTotal: number;   // subtotal + frete
+  deliveryFee: number;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
 };
@@ -62,6 +66,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     (sum, i) => sum + i.unitPrice * i.quantity,
     0
   );
+  const deliveryFee = items.length > 0 ? DELIVERY_FEE : 0;
+  const grandTotal = totalAmount + deliveryFee;
 
   return (
     <CartContext.Provider
@@ -73,6 +79,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         totalItems,
         totalAmount,
+        grandTotal,
+        deliveryFee,
         isOpen,
         setIsOpen,
       }}

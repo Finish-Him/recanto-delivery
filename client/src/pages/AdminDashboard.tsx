@@ -78,6 +78,21 @@ export default function AdminDashboard() {
     );
   }
 
+  const handleDevLogin = async () => {
+    try {
+      const res = await fetch("/api/dev/login-as-admin", { method: "POST", credentials: "include" });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Login de teste realizado! Recarregando...");
+        setTimeout(() => window.location.reload(), 800);
+      } else {
+        toast.error("Falha no login de teste: " + data.error);
+      }
+    } catch (e) {
+      toast.error("Erro ao fazer login de teste.");
+    }
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-5" style={{ background: WHITE }}>
@@ -95,8 +110,20 @@ export default function AdminDashboard() {
           className="font-black px-8"
           style={{ background: PURPLE, color: WHITE }}
         >
-          Fazer Login
+          Fazer Login com Manus
         </Button>
+        <div className="mt-2 p-4 rounded-2xl border-2 border-dashed text-center" style={{ borderColor: GOLD, background: "oklch(0.99 0.02 90)" }}>
+          <p className="font-bold text-sm mb-2" style={{ color: DARK }}>Modo de Teste</p>
+          <p className="text-xs mb-3" style={{ color: GRAY }}>Acesso direto ao painel sem login OAuth</p>
+          <Button
+            onClick={handleDevLogin}
+            variant="outline"
+            className="font-black px-6 border-2"
+            style={{ borderColor: GOLD, color: DARK }}
+          >
+            Entrar como Admin (Teste)
+          </Button>
+        </div>
       </div>
     );
   }
