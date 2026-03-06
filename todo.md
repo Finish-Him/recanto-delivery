@@ -200,3 +200,14 @@
 - [x] Link Google Maps clicável no endereço do pedido
 - [x] Exibir troco no card do pedido
 - [x] Contador de pedidos por status no topo (clicável como filtro)
+
+## Landing Page de Download do App
+- [x] Seção hero com logo, tagline e botões de instalação (iOS/Android)
+- [x] Seção de funcionalidades com ícones e descrições
+- [x] Seção de screenshots/mockups das telas do app
+- [x] Seção de instruções passo a passo (iOS Safari e Android Chrome)
+- [x] Seção de depoimentos (placeholder com clientes)
+- [x] Seção de FAQ sobre o app
+- [x] Rodapé com links e contato
+- [x] Rota /app registrada no App.tsx
+- [x] Link "Baixar App" no header da Home

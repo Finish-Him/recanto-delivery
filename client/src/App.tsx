@@ -20,6 +20,7 @@ import { DeliveryAuthProvider } from "./contexts/DeliveryAuthContext";
 import OrderTracking from "./pages/OrderTracking";
 import Register from "./pages/Register";
 import InstallApp from "./pages/InstallApp";
+import AppDownload from "./pages/AppDownload";
 
 function Router() {
   return (
@@ -36,6 +37,7 @@ function Router() {
       <Route path="/pedido/:id" component={OrderTracking} />
       <Route path="/cadastro" component={Register} />
       <Route path="/instalar" component={InstallApp} />
+      <Route path="/app" component={AppDownload} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

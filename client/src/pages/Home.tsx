@@ -3,7 +3,7 @@ import { useCart } from "@/contexts/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { MemphisShapes } from "@/components/MemphisShapes";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Plus, Minus, MapPin, Clock, Star } from "lucide-react";
+import { ShoppingCart, Plus, Minus, MapPin, Clock, Star, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 
 const PURPLE = "oklch(0.38 0.22 305)";
@@ -81,6 +81,15 @@ export default function Home() {
               <Clock className="w-4 h-4" />
               <span>30–45 min</span>
             </div>
+            {/* Link Baixar App */}
+            <a
+              href="/app"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
+              style={{ background: "oklch(0.32 0.20 305)", color: WHITE }}
+            >
+              <Smartphone className="w-4 h-4" />
+              <span>Baixar App</span>
+            </a>
             {/* Botão carrinho — área de toque mínima 48px */}
             <button
               onClick={() => setIsOpen(true)}
