@@ -98,12 +98,16 @@ export const orderItems = mysqlTable("orderItems", {
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = typeof orderItems.$inferInsert;
 
-// Tabela de entregadores
+// Tabela de entregadores (trabalhadores contratados)
 export const deliveryPersons = mysqlTable("deliveryPersons", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   phone: varchar("phone", { length: 20 }).notNull(),
   pin: varchar("pin", { length: 6 }).notNull(), // PIN de 4-6 dígitos para login
+  cpf: varchar("cpf", { length: 14 }),           // CPF formatado: 000.000.000-00
+  shift: mysqlEnum("shift", ["manha", "tarde", "noite", "integral"]).default("integral"),
+  hiredAt: varchar("hiredAt", { length: 10 }),   // Data de admissão: YYYY-MM-DD
+  notes: text("notes"),                          // Observações internas
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),

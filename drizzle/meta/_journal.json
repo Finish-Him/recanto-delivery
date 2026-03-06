@@ -43,6 +43,13 @@
       "when": 1772786260470,
       "tag": "0005_thin_bushwacker",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1772820963672,
+      "tag": "0006_useful_colleen_wing",
+      "breakpoints": true
     }
   ]
 }

@@ -150,3 +150,18 @@
 - [x] Atribuir/reatribuir entregador com um clique (sem modal separado)
 - [x] Feedback visual imediato ao atribuir (otimistic update)
 - [x] Exibir badge do entregador no card do pedido na lista
+
+## Sidebar Admin - Cores e Visual
+- [x] Colorir ícones e labels dos menus com paleta roxo/dourado
+- [x] Destacar item ativo com fundo roxo e texto branco
+- [x] Colorir grupos/seções do sidebar com cor de destaque
+- [x] Hover com efeito visual na paleta atual
+- [x] Submenus com indentação e cor diferenciada
+
+## Backend Entregadores - Perfil Completo
+- [x] Adicionar campos: CPF, data de admissão, turno, observações no schema
+- [x] Migrar banco com pnpm db:push
+- [x] API: retornar histórico de pedidos entregues por entregador
+- [x] API: métricas de desempenho (total entregas, faturamento, ticket médio)
+- [x] Página AdminEntregadores: exibir perfil completo com histórico e métricas
+- [x] Formulário de cadastro com campos completos (CPF, turno, admissão)

@@ -381,6 +381,36 @@ export async function getOrdersByDeliveryPerson(deliveryPersonId: number): Promi
   }));
 }
 
+export type DeliveryPersonStats = {
+  totalDeliveries: number;
+  totalRevenue: number;
+  avgTicket: number;
+  lastDeliveryAt: Date | null;
+};
+
+export async function getDeliveryPersonStats(deliveryPersonId: number): Promise<DeliveryPersonStats> {
+  const db = await getDb();
+  if (!db) return { totalDeliveries: 0, totalRevenue: 0, avgTicket: 0, lastDeliveryAt: null };
+
+  const [stats] = await db
+    .select({
+      totalDeliveries: sql<number>`COUNT(*)`,
+      totalRevenue: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)`,
+      lastDeliveryAt: sql<Date | null>`MAX(${orders.updatedAt})`,
+    })
+    .from(orders)
+    .where(eq(orders.deliveryPersonId, deliveryPersonId));
+
+  const total = Number(stats?.totalDeliveries ?? 0);
+  const revenue = Number(stats?.totalRevenue ?? 0);
+  return {
+    totalDeliveries: total,
+    totalRevenue: revenue,
+    avgTicket: total > 0 ? revenue / total : 0,
+    lastDeliveryAt: stats?.lastDeliveryAt ?? null,
+  };
+}
+
 // ─── Customers ──────────────────────────────────────────────────────────────────
 
 export async function createCustomer(

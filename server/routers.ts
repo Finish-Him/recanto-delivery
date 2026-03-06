@@ -29,6 +29,7 @@ import {
   updateDeliveryPerson,
   assignOrderToDeliveryPerson,
   getOrdersByDeliveryPerson,
+  getDeliveryPersonStats,
 } from "./db";
 import { notifyOwner } from "./_core/notification";
 import Stripe from "stripe";
@@ -313,6 +314,7 @@ export const appRouter = router({
           id: person.id,
           name: person.name,
           phone: person.phone,
+          shift: person.shift,
         };
       }),
 
@@ -324,7 +326,21 @@ export const appRouter = router({
         if (!person || !person.active) {
           throw new TRPCError({ code: "NOT_FOUND", message: "Entregador não encontrado." });
         }
-        return { id: person.id, name: person.name, phone: person.phone };
+        return { id: person.id, name: person.name, phone: person.phone, shift: person.shift };
+      }),
+
+    // Métricas de desempenho do entregador (admin)
+    stats: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        return getDeliveryPersonStats(input.id);
+      }),
+
+    // Histórico de pedidos entregues (admin)
+    orderHistory: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        return getOrdersByDeliveryPerson(input.id);
       }),
 
     // Pedidos atribuídos ao entregador (público — autenticado pelo ID salvo no localStorage)
@@ -372,11 +388,24 @@ export const appRouter = router({
           name: z.string().min(2),
           phone: z.string().min(10),
           pin: z.string().min(4).max(6),
+          cpf: z.string().optional(),
+          shift: z.enum(["manha", "tarde", "noite", "integral"]).default("integral"),
+          hiredAt: z.string().optional(),
+          notes: z.string().optional(),
           active: z.boolean().default(true),
         })
       )
       .mutation(async ({ input }) => {
-        const id = await createDeliveryPerson(input);
+        const id = await createDeliveryPerson({
+          name: input.name,
+          phone: input.phone,
+          pin: input.pin,
+          cpf: input.cpf ?? null,
+          shift: input.shift,
+          hiredAt: input.hiredAt ?? null,
+          notes: input.notes ?? null,
+          active: input.active,
+        });
         return { id };
       }),
 
@@ -388,6 +417,10 @@ export const appRouter = router({
           name: z.string().min(2).optional(),
           phone: z.string().min(10).optional(),
           pin: z.string().min(4).max(6).optional(),
+          cpf: z.string().optional().nullable(),
+          shift: z.enum(["manha", "tarde", "noite", "integral"]).optional(),
+          hiredAt: z.string().optional().nullable(),
+          notes: z.string().optional().nullable(),
           active: z.boolean().optional(),
         })
       )
