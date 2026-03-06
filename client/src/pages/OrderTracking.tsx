@@ -311,7 +311,7 @@ export default function OrderTracking() {
         {/* Botões de ação */}
         <div className="space-y-3 pt-2">
           <a
-            href="https://wa.me/5521974666669"
+            href="https://wa.me/5521981749450"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full h-12 rounded-2xl font-black text-sm transition-all hover:opacity-90"

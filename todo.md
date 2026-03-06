@@ -77,3 +77,14 @@
 ## Bugs de Login
 - [x] Corrigir erro no login admin/admin (rota /api/dev/login-as-admin)
 - [x] Corrigir redirecionamento OAuth Manus (deve ir para /admin após login)
+
+## Otimização Mobile
+- [ ] Home: ícones maiores, espaçamento touch-friendly, header compacto
+- [ ] CartDrawer: botões e ícones com área de toque adequada
+- [ ] AdminLogin: formulário centralizado e bem enquadrado no mobile
+- [ ] Checkout: campos de formulário com altura mínima 48px, labels legíveis
+- [ ] OrderTracking: timeline vertical responsiva, texto legível
+- [ ] AdminDashboard: sidebar colapsável, cards de pedido otimizados para mobile
+
+## Dados de Contato
+- [x] Atualizar número de WhatsApp para (21) 98174-9450 em todas as telas

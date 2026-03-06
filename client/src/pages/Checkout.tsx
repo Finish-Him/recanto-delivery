@@ -6,14 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, ShoppingBag, CreditCard, Banknote, QrCode, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CreditCard, Banknote, QrCode, Loader2, CheckCircle2, MapPin, Package } from "lucide-react";
 import { toast } from "sonner";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
 
-// Cores da marca
 const PURPLE = "oklch(0.38 0.22 305)";
 const GOLD = "oklch(0.77 0.19 90)";
 const WHITE = "oklch(0.99 0 0)";
@@ -29,10 +28,10 @@ const paymentOptions: { value: PaymentMethod; label: string; icon: React.ReactNo
   { value: "pix", label: "PIX", icon: <QrCode className="w-5 h-5" />, description: "Na entrega" },
   { value: "cartao_debito", label: "Débito", icon: <CreditCard className="w-5 h-5" />, description: "Maquininha" },
   { value: "cartao_credito", label: "Crédito", icon: <CreditCard className="w-5 h-5" />, description: "Maquininha" },
-  { value: "cartao_online", label: "Online", icon: <CreditCard className="w-5 h-5" />, description: "Stripe seguro" },
+  { value: "cartao_online", label: "Online", icon: <CreditCard className="w-5 h-5" />, description: "Stripe" },
 ];
 
-function StripePaymentForm({ clientSecret, onSuccess }: { clientSecret: string; onSuccess: () => void }) {
+function StripePaymentForm({ clientSecret, grandTotal, onSuccess }: { clientSecret: string; grandTotal: number; onSuccess: () => void }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -60,34 +59,43 @@ function StripePaymentForm({ clientSecret, onSuccess }: { clientSecret: string; 
       <Button
         type="submit"
         disabled={loading || !stripe}
-        className="w-full font-black py-6 rounded-2xl text-white"
-        style={{ background: PURPLE }}
+        className="w-full font-black rounded-2xl text-white"
+        style={{ background: PURPLE, minHeight: 56 }}
       >
-        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processando...</> : "Confirmar Pagamento"}
+        {loading ? (
+          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processando...</>
+        ) : (
+          `Confirmar Pagamento — R$ ${grandTotal.toFixed(2).replace(".", ",")}`
+        )}
       </Button>
     </form>
   );
 }
 
-// Shared header component
 function CheckoutHeader({ title, onBack }: { title: string; onBack: () => void }) {
   return (
     <header className="sticky top-0 z-10 shadow-sm" style={{ background: PURPLE }}>
-      <div className="container flex items-center h-16 gap-3">
+      <div className="container flex items-center gap-3" style={{ minHeight: 64 }}>
+        {/* Botão voltar — área de toque 48px */}
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 font-bold text-sm transition-opacity hover:opacity-80"
-          style={{ color: WHITE }}
+          className="flex items-center justify-center rounded-xl transition-opacity hover:opacity-80 active:scale-95 flex-shrink-0"
+          style={{ color: WHITE, minWidth: 48, minHeight: 48 }}
+          aria-label="Voltar"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Voltar
+          <ArrowLeft className="w-5 h-5" />
         </button>
-        <div className="w-px h-5 opacity-30" style={{ background: WHITE }} />
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full overflow-hidden border" style={{ borderColor: GOLD }}>
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <div
+            className="rounded-full overflow-hidden border flex-shrink-0"
+            style={{ borderColor: GOLD, width: 32, height: 32 }}
+          >
             <img src={LOGO_URL} alt="Recanto do Açaí" className="w-full h-full object-cover" />
           </div>
-          <h1 className="font-black text-base" style={{ color: WHITE, fontFamily: "Nunito, sans-serif" }}>
+          <h1
+            className="font-black text-base truncate"
+            style={{ color: WHITE, fontFamily: "Nunito, sans-serif" }}
+          >
             {title}
           </h1>
         </div>
@@ -119,14 +127,21 @@ export default function Checkout() {
 
   if (items.length === 0 && step !== "done") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-5" style={{ background: WHITE }}>
-        <div className="w-24 h-24 rounded-full overflow-hidden border-4" style={{ borderColor: PURPLE }}>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-5 px-4" style={{ background: WHITE }}>
+        <div
+          className="rounded-full overflow-hidden border-4"
+          style={{ borderColor: PURPLE, width: 96, height: 96 }}
+        >
           <img src={LOGO_URL} alt="Recanto do Açaí" className="w-full h-full object-cover" />
         </div>
         <p className="font-black text-xl" style={{ color: DARK, fontFamily: "Nunito, sans-serif" }}>
           Carrinho vazio!
         </p>
-        <Button onClick={() => navigate("/")} style={{ background: PURPLE, color: WHITE }} className="font-black px-8">
+        <Button
+          onClick={() => navigate("/")}
+          style={{ background: PURPLE, color: WHITE, minHeight: 52 }}
+          className="font-black px-10 rounded-2xl"
+        >
           Ver Cardápio
         </Button>
       </div>
@@ -136,7 +151,7 @@ export default function Checkout() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.customerName.trim() || !form.address.trim()) {
-      toast.error("Preencha os campos obrigatórios.");
+      toast.error("Preencha nome e endereço.");
       return;
     }
     try {
@@ -178,7 +193,6 @@ export default function Checkout() {
   };
 
   if (step === "done") {
-    // Redirecionar automaticamente para a página de rastreamento após 3 segundos
     setTimeout(() => {
       if (orderId) navigate(`/pedido/${orderId}`);
     }, 3000);
@@ -187,14 +201,14 @@ export default function Checkout() {
       <div className="min-h-screen flex flex-col" style={{ background: WHITE }}>
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4 text-center">
           <div
-            className="w-24 h-24 rounded-full flex items-center justify-center shadow-lg"
-            style={{ background: "oklch(0.45 0.18 145)" }}
+            className="rounded-full flex items-center justify-center shadow-lg"
+            style={{ background: "oklch(0.45 0.18 145)", width: 96, height: 96 }}
           >
             <CheckCircle2 className="w-12 h-12 text-white" />
           </div>
           <div>
             <h2
-              className="font-black text-3xl sm:text-4xl mb-2"
+              className="font-black text-3xl mb-2"
               style={{ color: DARK, fontFamily: "Nunito, sans-serif" }}
             >
               Pedido Confirmado!
@@ -218,16 +232,16 @@ export default function Checkout() {
           <div className="flex flex-col gap-3 w-full max-w-xs">
             <Button
               onClick={() => orderId && navigate(`/pedido/${orderId}`)}
-              className="font-black px-10 py-5 rounded-2xl text-white shadow-lg"
-              style={{ background: PURPLE }}
+              className="font-black rounded-2xl text-white shadow-lg"
+              style={{ background: PURPLE, minHeight: 52 }}
             >
               Acompanhar Pedido
             </Button>
             <Button
               onClick={() => navigate("/")}
               variant="outline"
-              className="font-black px-10 py-5 rounded-2xl border-2"
-              style={{ borderColor: PURPLE, color: PURPLE }}
+              className="font-black rounded-2xl border-2 bg-transparent"
+              style={{ borderColor: PURPLE, color: PURPLE, minHeight: 52 }}
             >
               Fazer Novo Pedido
             </Button>
@@ -241,17 +255,24 @@ export default function Checkout() {
     return (
       <div className="min-h-screen" style={{ background: WHITE }}>
         <CheckoutHeader title="Pagamento Online" onBack={() => setStep("form")} />
-        <div className="container py-8 max-w-lg">
+        <div className="container py-6 max-w-lg">
           <div
-            className="rounded-2xl p-6 shadow-sm border"
+            className="rounded-2xl p-5 shadow-sm border"
             style={{ borderColor: BORDER }}
           >
             <p className="font-bold text-sm mb-1" style={{ color: GRAY }}>Total a pagar</p>
-            <p className="font-black text-3xl mb-6" style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}>
+            <p
+              className="font-black text-3xl mb-6"
+              style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}
+            >
               R$ {grandTotal.toFixed(2).replace(".", ",")}
             </p>
             <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe" } }}>
-              <StripePaymentForm clientSecret={clientSecret} onSuccess={() => { clearCart(); setStep("done"); }} />
+              <StripePaymentForm
+                clientSecret={clientSecret}
+                grandTotal={grandTotal}
+                onSuccess={() => { clearCart(); setStep("done"); }}
+              />
             </Elements>
             <p className="text-xs mt-4 text-center" style={{ color: GRAY }}>
               Teste: cartão <strong>4242 4242 4242 4242</strong>
@@ -263,83 +284,109 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: WHITE }}>
+    <div className="min-h-screen" style={{ background: "oklch(0.97 0.01 305)" }}>
       <CheckoutHeader title="Finalizar Pedido" onBack={() => navigate("/")} />
 
-      <div className="container py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 max-w-4xl mx-auto">
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="lg:col-span-3 space-y-5">
-            {/* Delivery */}
-            <div className="rounded-2xl p-6 shadow-sm border" style={{ borderColor: BORDER }}>
+      <div className="container py-5 pb-10">
+        {/* Layout: em mobile, resumo fica ABAIXO do formulário; em desktop, ao lado */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 max-w-4xl mx-auto">
+
+          {/* Formulário */}
+          <form onSubmit={handleSubmit} className="lg:col-span-3 space-y-4">
+
+            {/* Card: Dados de Entrega */}
+            <div
+              className="rounded-2xl p-5 shadow-sm"
+              style={{ background: WHITE, border: `1.5px solid ${BORDER}` }}
+            >
               <div className="flex items-center gap-2 mb-5">
-                <div className="w-1 h-6 rounded-full" style={{ background: PURPLE }} />
-                <h2 className="font-black text-lg" style={{ color: DARK, fontFamily: "Nunito, sans-serif" }}>
+                <MapPin className="w-5 h-5 flex-shrink-0" style={{ color: PURPLE }} />
+                <h2
+                  className="font-black text-lg"
+                  style={{ color: DARK, fontFamily: "Nunito, sans-serif" }}
+                >
                   Dados de Entrega
                 </h2>
               </div>
               <div className="space-y-4">
                 <div>
-                  <Label className="font-bold text-sm" style={{ color: DARK }}>Nome completo *</Label>
+                  <Label
+                    className="block font-bold text-sm mb-1.5"
+                    style={{ color: DARK }}
+                  >
+                    Nome completo *
+                  </Label>
                   <Input
                     value={form.customerName}
                     onChange={(e) => setForm({ ...form, customerName: e.target.value })}
                     placeholder="Seu nome"
                     required
-                    className="mt-1 font-semibold rounded-xl"
-                    style={{ borderColor: BORDER }}
+                    className="font-semibold rounded-xl"
+                    style={{ borderColor: BORDER, minHeight: 48 }}
                   />
                 </div>
                 <div>
-                  <Label className="font-bold text-sm" style={{ color: DARK }}>WhatsApp / Telefone</Label>
+                  <Label className="block font-bold text-sm mb-1.5" style={{ color: DARK }}>
+                    WhatsApp / Telefone
+                  </Label>
                   <Input
                     value={form.customerPhone}
                     onChange={(e) => setForm({ ...form, customerPhone: e.target.value })}
                     placeholder="(21) 99999-9999"
-                    className="mt-1 font-semibold rounded-xl"
-                    style={{ borderColor: BORDER }}
+                    type="tel"
+                    className="font-semibold rounded-xl"
+                    style={{ borderColor: BORDER, minHeight: 48 }}
                   />
                 </div>
                 <div>
-                  <Label className="font-bold text-sm" style={{ color: DARK }}>Endereço (rua e número) *</Label>
+                  <Label className="block font-bold text-sm mb-1.5" style={{ color: DARK }}>
+                    Endereço (rua e número) *
+                  </Label>
                   <Input
                     value={form.address}
                     onChange={(e) => setForm({ ...form, address: e.target.value })}
                     placeholder="Rua das Flores, 123"
                     required
-                    className="mt-1 font-semibold rounded-xl"
-                    style={{ borderColor: BORDER }}
+                    className="font-semibold rounded-xl"
+                    style={{ borderColor: BORDER, minHeight: 48 }}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                {/* Bairro e complemento em coluna no mobile, lado a lado no sm+ */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <Label className="font-bold text-sm" style={{ color: DARK }}>Bairro</Label>
+                    <Label className="block font-bold text-sm mb-1.5" style={{ color: DARK }}>
+                      Bairro
+                    </Label>
                     <Input
                       value={form.neighborhood}
                       onChange={(e) => setForm({ ...form, neighborhood: e.target.value })}
                       placeholder="Bairro"
-                      className="mt-1 font-semibold rounded-xl"
-                      style={{ borderColor: BORDER }}
+                      className="font-semibold rounded-xl"
+                      style={{ borderColor: BORDER, minHeight: 48 }}
                     />
                   </div>
                   <div>
-                    <Label className="font-bold text-sm" style={{ color: DARK }}>Complemento</Label>
+                    <Label className="block font-bold text-sm mb-1.5" style={{ color: DARK }}>
+                      Complemento
+                    </Label>
                     <Input
                       value={form.complement}
                       onChange={(e) => setForm({ ...form, complement: e.target.value })}
                       placeholder="Apto, bloco..."
-                      className="mt-1 font-semibold rounded-xl"
-                      style={{ borderColor: BORDER }}
+                      className="font-semibold rounded-xl"
+                      style={{ borderColor: BORDER, minHeight: 48 }}
                     />
                   </div>
                 </div>
                 <div>
-                  <Label className="font-bold text-sm" style={{ color: DARK }}>Observações</Label>
+                  <Label className="block font-bold text-sm mb-1.5" style={{ color: DARK }}>
+                    Observações
+                  </Label>
                   <Textarea
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
                     placeholder="Sem granola, mais leite condensado..."
-                    className="mt-1 font-semibold resize-none rounded-xl"
+                    className="font-semibold resize-none rounded-xl"
                     rows={2}
                     style={{ borderColor: BORDER }}
                   />
@@ -347,14 +394,21 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Payment */}
-            <div className="rounded-2xl p-6 shadow-sm border" style={{ borderColor: BORDER }}>
+            {/* Card: Forma de Pagamento */}
+            <div
+              className="rounded-2xl p-5 shadow-sm"
+              style={{ background: WHITE, border: `1.5px solid ${BORDER}` }}
+            >
               <div className="flex items-center gap-2 mb-5">
-                <div className="w-1 h-6 rounded-full" style={{ background: PURPLE }} />
-                <h2 className="font-black text-lg" style={{ color: DARK, fontFamily: "Nunito, sans-serif" }}>
+                <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: PURPLE }} />
+                <h2
+                  className="font-black text-lg"
+                  style={{ color: DARK, fontFamily: "Nunito, sans-serif" }}
+                >
                   Forma de Pagamento
                 </h2>
               </div>
+              {/* Grid 2 colunas no mobile, 3 no sm+ — botões com altura mínima 72px para toque */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {paymentOptions.map((opt) => {
                   const selected = form.paymentMethod === opt.value;
@@ -363,16 +417,21 @@ export default function Checkout() {
                       key={opt.value}
                       type="button"
                       onClick={() => setForm({ ...form, paymentMethod: opt.value })}
-                      className="flex flex-col items-center gap-1.5 p-3 rounded-2xl border-2 font-bold text-sm transition-all"
+                      className="flex flex-col items-center gap-1.5 rounded-2xl border-2 font-bold text-sm transition-all active:scale-95"
                       style={{
                         borderColor: selected ? PURPLE : BORDER,
                         background: selected ? "oklch(0.96 0.01 305)" : WHITE,
                         color: DARK,
+                        padding: "12px 8px",
+                        minHeight: 72,
                       }}
                     >
                       <span style={{ color: selected ? PURPLE : GRAY }}>{opt.icon}</span>
                       <span className="font-black text-xs uppercase">{opt.label}</span>
-                      <span className="text-xs font-semibold text-center leading-tight" style={{ color: GRAY }}>
+                      <span
+                        className="text-xs font-semibold text-center leading-tight"
+                        style={{ color: GRAY }}
+                      >
                         {opt.description}
                       </span>
                     </button>
@@ -381,11 +440,58 @@ export default function Checkout() {
               </div>
             </div>
 
+            {/* Resumo mobile — aparece entre o form e o botão no mobile */}
+            <div
+              className="rounded-2xl overflow-hidden shadow-sm lg:hidden"
+              style={{ border: `1.5px solid ${BORDER}` }}
+            >
+              <div className="px-5 py-3 flex items-center gap-2" style={{ background: PURPLE }}>
+                <Package className="w-4 h-4" style={{ color: WHITE }} />
+                <h2 className="font-black text-sm" style={{ color: WHITE, fontFamily: "Nunito, sans-serif" }}>
+                  Resumo do Pedido
+                </h2>
+              </div>
+              <div className="p-4" style={{ background: WHITE }}>
+                <div className="space-y-2 mb-3">
+                  {items.map((item) => (
+                    <div key={item.productId} className="flex justify-between items-start gap-2">
+                      <p className="font-bold text-sm flex-1 min-w-0 truncate" style={{ color: DARK }}>
+                        {item.quantity}× {item.productName}
+                      </p>
+                      <span className="font-bold text-sm whitespace-nowrap" style={{ color: GRAY }}>
+                        R$ {(item.unitPrice * item.quantity).toFixed(2).replace(".", ",")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t pt-3 space-y-1.5" style={{ borderColor: BORDER }}>
+                  <div className="flex justify-between text-sm font-semibold" style={{ color: GRAY }}>
+                    <span>Subtotal</span>
+                    <span>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
+                  </div>
+                  <div className="flex justify-between text-sm font-semibold" style={{ color: GRAY }}>
+                    <span>Taxa de entrega</span>
+                    <span>R$ {deliveryFee.toFixed(2).replace(".", ",")}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-1 border-t" style={{ borderColor: BORDER }}>
+                    <span className="font-black" style={{ color: DARK }}>Total</span>
+                    <span
+                      className="font-black text-2xl"
+                      style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}
+                    >
+                      R$ {grandTotal.toFixed(2).replace(".", ",")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Botão confirmar — altura 56px */}
             <Button
               type="submit"
               disabled={createOrder.isPending || createPaymentIntent.isPending}
-              className="w-full font-black py-6 rounded-2xl text-white text-base shadow-lg transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ background: PURPLE }}
+              className="w-full font-black rounded-2xl text-white text-base shadow-lg transition-all hover:opacity-90 active:scale-[0.98]"
+              style={{ background: PURPLE, minHeight: 56 }}
             >
               {createOrder.isPending || createPaymentIntent.isPending ? (
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processando...</>
@@ -397,16 +503,22 @@ export default function Checkout() {
             </Button>
           </form>
 
-          {/* Order summary */}
-          <div className="lg:col-span-2">
-            <div className="rounded-2xl shadow-sm border sticky top-24 overflow-hidden" style={{ borderColor: BORDER }}>
-              {/* Summary header */}
-              <div className="px-5 py-4" style={{ background: PURPLE }}>
-                <h2 className="font-black text-base" style={{ color: WHITE, fontFamily: "Nunito, sans-serif" }}>
+          {/* Resumo desktop — visível apenas em lg+ */}
+          <div className="lg:col-span-2 hidden lg:block">
+            <div
+              className="rounded-2xl shadow-sm overflow-hidden sticky top-24"
+              style={{ border: `1.5px solid ${BORDER}` }}
+            >
+              <div className="px-5 py-4 flex items-center gap-2" style={{ background: PURPLE }}>
+                <Package className="w-4 h-4" style={{ color: WHITE }} />
+                <h2
+                  className="font-black text-base"
+                  style={{ color: WHITE, fontFamily: "Nunito, sans-serif" }}
+                >
                   Resumo do Pedido
                 </h2>
               </div>
-              <div className="p-5">
+              <div className="p-5" style={{ background: WHITE }}>
                 <div className="space-y-3 mb-4">
                   {items.map((item) => (
                     <div key={item.productId} className="flex justify-between items-start gap-2">
@@ -427,15 +539,25 @@ export default function Checkout() {
                 <div className="border-t pt-3 space-y-2" style={{ borderColor: BORDER }}>
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-sm" style={{ color: GRAY }}>Subtotal</span>
-                    <span className="font-semibold text-sm" style={{ color: GRAY }}>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
+                    <span className="font-semibold text-sm" style={{ color: GRAY }}>
+                      R$ {totalAmount.toFixed(2).replace(".", ",")}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-sm" style={{ color: GRAY }}>Taxa de entrega</span>
-                    <span className="font-semibold text-sm" style={{ color: GRAY }}>R$ {deliveryFee.toFixed(2).replace(".", ",")}</span>
+                    <span className="font-semibold text-sm" style={{ color: GRAY }}>
+                      R$ {deliveryFee.toFixed(2).replace(".", ",")}
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center pt-1 border-t" style={{ borderColor: BORDER }}>
+                  <div
+                    className="flex justify-between items-center pt-1 border-t"
+                    style={{ borderColor: BORDER }}
+                  >
                     <span className="font-black" style={{ color: DARK }}>Total</span>
-                    <span className="font-black text-2xl" style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}>
+                    <span
+                      className="font-black text-2xl"
+                      style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}
+                    >
                       R$ {grandTotal.toFixed(2).replace(".", ",")}
                     </span>
                   </div>

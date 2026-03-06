@@ -29,14 +29,14 @@ export function CartDrawer() {
         className="w-full sm:max-w-md flex flex-col p-0 overflow-hidden"
         style={{ background: WHITE }}
       >
-        {/* Header roxo */}
+        {/* Header roxo — altura 64px */}
         <SheetHeader
-          className="px-5 py-4 flex-row items-center gap-3"
-          style={{ background: PURPLE }}
+          className="flex-row items-center gap-3 flex-shrink-0"
+          style={{ background: PURPLE, padding: "0 20px", minHeight: 64 }}
         >
           <div
-            className="w-9 h-9 rounded-full overflow-hidden border-2 flex-shrink-0"
-            style={{ borderColor: GOLD }}
+            className="rounded-full overflow-hidden border-2 flex-shrink-0"
+            style={{ borderColor: GOLD, width: 40, height: 40 }}
           >
             <img src={LOGO_URL} alt="Recanto do Açaí" className="w-full h-full object-cover" />
           </div>
@@ -48,7 +48,7 @@ export function CartDrawer() {
           </SheetTitle>
           {totalItems > 0 && (
             <span
-              className="text-sm font-black px-3 py-1 rounded-full"
+              className="text-sm font-black px-3 py-1.5 rounded-full flex-shrink-0"
               style={{ background: GOLD, color: DARK }}
             >
               {totalItems} {totalItems === 1 ? "item" : "itens"}
@@ -59,8 +59,8 @@ export function CartDrawer() {
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center px-6">
             <div
-              className="w-24 h-24 rounded-full flex items-center justify-center"
-              style={{ background: "oklch(0.96 0.01 305)" }}
+              className="rounded-full flex items-center justify-center"
+              style={{ background: "oklch(0.96 0.01 305)", width: 96, height: 96 }}
             >
               <ShoppingBag className="w-12 h-12" style={{ color: PURPLE }} />
             </div>
@@ -72,88 +72,113 @@ export function CartDrawer() {
             </p>
             <Button
               onClick={() => setIsOpen(false)}
-              className="mt-2 font-black px-8"
-              style={{ background: PURPLE, color: WHITE }}
+              className="mt-2 font-black px-8 rounded-xl"
+              style={{ background: PURPLE, color: WHITE, minHeight: 48 }}
             >
               Ver Cardápio
             </Button>
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {items.map((item) => (
-                <div
-                  key={item.productId}
-                  className="flex items-center gap-3 p-3 rounded-2xl border"
-                  style={{ borderColor: BORDER }}
-                >
-                  {/* Item icon */}
+            {/* Lista de itens com scroll */}
+            <div className="flex-1 overflow-y-auto" style={{ padding: "12px 16px" }}>
+              <div className="space-y-3">
+                {items.map((item) => (
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
-                    style={{ background: "oklch(0.96 0.01 305)" }}
+                    key={item.productId}
+                    className="flex items-center gap-3 rounded-2xl border"
+                    style={{ borderColor: BORDER, padding: "12px" }}
                   >
-                    🍇
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-black text-sm truncate" style={{ color: DARK }}>
-                      {item.productName}
-                    </p>
-                    <p className="text-sm font-bold" style={{ color: PURPLE }}>
-                      R$ {(item.unitPrice * item.quantity).toFixed(2).replace(".", ",")}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                      className="w-7 h-7 rounded-full flex items-center justify-center border-2 font-bold transition-colors hover:bg-purple-50"
-                      style={{ borderColor: PURPLE, color: PURPLE }}
+                    {/* Emoji ícone */}
+                    <div
+                      className="rounded-xl flex items-center justify-center flex-shrink-0 text-xl"
+                      style={{ background: "oklch(0.96 0.01 305)", width: 48, height: 48 }}
                     >
-                      <Minus className="w-3 h-3" />
-                    </button>
-                    <span className="w-6 text-center font-black text-sm" style={{ color: DARK }}>
-                      {item.quantity}
-                    </span>
+                      🍇
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-black text-sm leading-tight truncate" style={{ color: DARK }}>
+                        {item.productName}
+                      </p>
+                      <p className="text-sm font-bold mt-0.5" style={{ color: PURPLE }}>
+                        R$ {(item.unitPrice * item.quantity).toFixed(2).replace(".", ",")}
+                      </p>
+                    </div>
+                    {/* Controles de quantidade — botões 40x40px */}
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <button
+                        onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                        className="rounded-full border-2 flex items-center justify-center font-bold transition-colors hover:bg-purple-50 active:scale-95"
+                        style={{ borderColor: PURPLE, color: PURPLE, width: 40, height: 40 }}
+                        aria-label="Diminuir"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span
+                        className="font-black text-base text-center"
+                        style={{ color: DARK, minWidth: 24 }}
+                      >
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                        className="rounded-full flex items-center justify-center font-bold text-white transition-opacity hover:opacity-80 active:scale-95"
+                        style={{ background: PURPLE, width: 40, height: 40 }}
+                        aria-label="Aumentar"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {/* Botão remover — 40x40px */}
                     <button
-                      onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                      className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-white transition-opacity hover:opacity-80"
-                      style={{ background: PURPLE }}
+                      onClick={() => removeItem(item.productId)}
+                      className="rounded-full flex items-center justify-center transition-colors hover:bg-red-50 active:scale-95 flex-shrink-0"
+                      style={{ color: "oklch(0.55 0.22 25)", width: 40, height: 40 }}
+                      aria-label="Remover item"
                     >
-                      <Plus className="w-3 h-3" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-                  <button
-                    onClick={() => removeItem(item.productId)}
-                    className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:bg-red-50"
-                    style={{ color: "oklch(0.55 0.22 25)" }}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
+            {/* Rodapé com totais e botão */}
             <div
-              className="p-4 space-y-3 border-t"
-              style={{ borderColor: BORDER }}
+              className="flex-shrink-0 space-y-3 border-t"
+              style={{ borderColor: BORDER, padding: "16px" }}
             >
               <div className="space-y-2 px-1">
                 <div className="flex justify-between items-center">
                   <span className="font-semibold text-sm" style={{ color: GRAY }}>Subtotal</span>
-                  <span className="font-bold text-sm" style={{ color: GRAY }}>R$ {totalAmount.toFixed(2).replace(".", ",")}</span>
+                  <span className="font-bold text-sm" style={{ color: GRAY }}>
+                    R$ {totalAmount.toFixed(2).replace(".", ",")}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-semibold text-sm" style={{ color: GRAY }}>Taxa de entrega</span>
-                  <span className="font-bold text-sm" style={{ color: GRAY }}>R$ {deliveryFee.toFixed(2).replace(".", ",")}</span>
+                  <span className="font-bold text-sm" style={{ color: GRAY }}>
+                    R$ {deliveryFee.toFixed(2).replace(".", ",")}
+                  </span>
                 </div>
-                <div className="flex justify-between items-center pt-1 border-t" style={{ borderColor: BORDER }}>
+                <div
+                  className="flex justify-between items-center pt-2 border-t"
+                  style={{ borderColor: BORDER }}
+                >
                   <span className="font-black text-base" style={{ color: DARK }}>Total</span>
-                  <span className="font-black text-2xl" style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}>R$ {grandTotal.toFixed(2).replace(".", ",")}</span>
+                  <span
+                    className="font-black text-2xl"
+                    style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}
+                  >
+                    R$ {grandTotal.toFixed(2).replace(".", ",")}
+                  </span>
                 </div>
               </div>
+              {/* Botão finalizar — altura 56px para fácil toque */}
               <Button
                 onClick={handleCheckout}
-                className="w-full font-black text-base py-6 rounded-2xl shadow-lg transition-all hover:opacity-90 active:scale-[0.98]"
-                style={{ background: PURPLE, color: WHITE }}
+                className="w-full font-black text-base rounded-2xl shadow-lg transition-all hover:opacity-90 active:scale-[0.98]"
+                style={{ background: PURPLE, color: WHITE, minHeight: 56 }}
               >
                 Finalizar Pedido →
               </Button>

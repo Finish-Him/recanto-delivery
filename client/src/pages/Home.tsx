@@ -6,11 +6,9 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Plus, Minus, MapPin, Clock, Star } from "lucide-react";
 import { toast } from "sonner";
 
-// Cores da marca
 const PURPLE = "oklch(0.38 0.22 305)";
 const PURPLE_MED = "oklch(0.46 0.25 305)";
 const GOLD = "oklch(0.77 0.19 90)";
-const GOLD_LIGHT = "oklch(0.94 0.10 90)";
 const WHITE = "oklch(0.99 0 0)";
 const DARK = "oklch(0.12 0 0)";
 const GRAY = "oklch(0.45 0.03 305)";
@@ -43,16 +41,16 @@ export default function Home() {
     <div className="min-h-screen relative" style={{ background: WHITE }}>
       <MemphisShapes />
 
-      {/* Header */}
+      {/* Header — altura mínima 64px, ícones e botões com área de toque ≥48px */}
       <header
         className="relative z-10 sticky top-0 shadow-sm"
         style={{ background: PURPLE }}
       >
-        <div className="container flex items-center justify-between h-16">
+        <div className="container flex items-center justify-between" style={{ minHeight: 64 }}>
           {/* Logo */}
           <div className="flex items-center gap-3">
             <div
-              className="w-10 h-10 rounded-full overflow-hidden border-2 flex-shrink-0"
+              className="w-11 h-11 rounded-full overflow-hidden border-2 flex-shrink-0"
               style={{ borderColor: GOLD }}
             >
               <img
@@ -75,24 +73,33 @@ export default function Home() {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div
-              className="hidden sm:flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-full"
               style={{ background: "oklch(0.32 0.20 305)", color: GOLD }}
             >
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-4 h-4" />
               <span>30–45 min</span>
             </div>
+            {/* Botão carrinho — área de toque mínima 48px */}
             <button
               onClick={() => setIsOpen(true)}
-              className="relative flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all hover:opacity-90 active:scale-95"
-              style={{ background: GOLD, color: DARK }}
+              className="relative flex items-center gap-2 rounded-full font-bold text-sm transition-all hover:opacity-90 active:scale-95"
+              style={{
+                background: GOLD,
+                color: DARK,
+                minHeight: 48,
+                minWidth: 48,
+                paddingLeft: 16,
+                paddingRight: 16,
+              }}
+              aria-label="Abrir carrinho"
             >
-              <ShoppingCart className="w-4 h-4" />
+              <ShoppingCart className="w-5 h-5" />
               <span className="hidden sm:inline font-black">Carrinho</span>
               {totalItems > 0 && (
                 <span
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-xs font-black flex items-center justify-center"
+                  className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full text-xs font-black flex items-center justify-center"
                   style={{ background: WHITE, color: PURPLE }}
                 >
                   {totalItems}
@@ -105,11 +112,11 @@ export default function Home() {
 
       {/* Hero Banner */}
       <section className="relative z-10 overflow-hidden" style={{ background: PURPLE }}>
-        <div className="container py-10 sm:py-14">
-          <div className="flex flex-col sm:flex-row items-center gap-8">
+        <div className="container py-8 sm:py-14">
+          <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
             <div className="flex-1 text-center sm:text-left">
               <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black mb-4"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-black mb-4"
                 style={{ background: GOLD, color: DARK }}
               >
                 <Star className="w-3.5 h-3.5 fill-current" />
@@ -123,7 +130,7 @@ export default function Home() {
                 <br />
                 <span style={{ color: GOLD }}>na sua porta!</span>
               </h2>
-              <p className="text-sm sm:text-base font-semibold mb-5 max-w-sm" style={{ color: "oklch(0.85 0.05 305)" }}>
+              <p className="text-sm sm:text-base font-semibold mb-5 max-w-sm mx-auto sm:mx-0" style={{ color: "oklch(0.85 0.05 305)" }}>
                 Batido na hora, com ingredientes selecionados e muito amor. Peça agora e receba em 30–45 minutos.
               </p>
               <div className="flex items-center justify-center sm:justify-start gap-2 text-sm font-bold" style={{ color: GOLD }}>
@@ -134,7 +141,7 @@ export default function Home() {
             {/* Hero image */}
             <div className="relative flex-shrink-0">
               <div
-                className="w-44 h-44 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 shadow-2xl"
+                className="w-36 h-36 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 shadow-2xl"
                 style={{ borderColor: GOLD }}
               >
                 <img
@@ -161,11 +168,11 @@ export default function Home() {
       </section>
 
       {/* Menu Section */}
-      <section className="relative z-10 pb-28">
+      <section className="relative z-10 pb-32">
         <div className="container pt-8">
           {/* Section header */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-1 h-8 rounded-full" style={{ background: PURPLE }} />
+            <div className="w-1.5 h-8 rounded-full" style={{ background: PURPLE }} />
             <h3
               className="font-black text-2xl"
               style={{ color: DARK, fontFamily: "Nunito, sans-serif" }}
@@ -175,7 +182,7 @@ export default function Home() {
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1, 2, 3].map((n) => (
                 <div
                   key={n}
@@ -192,7 +199,7 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {products?.map((product) => {
                 const qty = getItemQuantity(product.id);
                 return (
@@ -202,7 +209,7 @@ export default function Home() {
                     style={{ background: WHITE, border: `2px solid ${BORDER}` }}
                   >
                     {/* Product image */}
-                    <div className="relative h-48 overflow-hidden" style={{ background: "oklch(0.96 0.01 305)" }}>
+                    <div className="relative overflow-hidden" style={{ background: "oklch(0.96 0.01 305)", height: 180 }}>
                       {product.imageUrl ? (
                         <img
                           src={product.imageUrl}
@@ -220,7 +227,7 @@ export default function Home() {
                       )}
                       {/* Category badge */}
                       <div
-                        className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-black uppercase"
+                        className="absolute top-3 left-3 px-3 py-1.5 rounded-full text-xs font-black uppercase"
                         style={{ background: PURPLE, color: WHITE }}
                       >
                         {product.category}
@@ -228,7 +235,7 @@ export default function Home() {
                     </div>
 
                     {/* Product info */}
-                    <div className="p-5">
+                    <div className="p-4 sm:p-5">
                       <h4
                         className="font-black text-base leading-tight mb-1"
                         style={{ color: DARK, fontFamily: "Nunito, sans-serif" }}
@@ -242,42 +249,59 @@ export default function Home() {
                         {product.description}
                       </p>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-3">
                         <span
-                          className="font-black text-2xl"
+                          className="font-black text-xl sm:text-2xl"
                           style={{ color: PURPLE, fontFamily: "Nunito, sans-serif" }}
                         >
                           R$ {parseFloat(product.price).toFixed(2).replace(".", ",")}
                         </span>
 
                         {qty === 0 ? (
-                          <Button
+                          /* Botão Adicionar — área de toque 48px */
+                          <button
                             onClick={() => handleAdd(product)}
-                            className="font-black rounded-xl px-4 py-2 text-sm transition-all hover:opacity-90 active:scale-95"
-                            style={{ background: PURPLE, color: WHITE }}
+                            className="flex items-center gap-1.5 font-black rounded-xl px-4 text-sm transition-all hover:opacity-90 active:scale-95"
+                            style={{
+                              background: PURPLE,
+                              color: WHITE,
+                              minHeight: 48,
+                            }}
                           >
-                            <Plus className="w-4 h-4 mr-1" />
+                            <Plus className="w-4 h-4" />
                             Adicionar
-                          </Button>
+                          </button>
                         ) : (
-                          <div className="flex items-center gap-2">
+                          /* Controles de quantidade — botões 48x48px */
+                          <div className="flex items-center gap-1">
                             <button
                               onClick={() => updateQuantity(product.id, qty - 1)}
-                              className="w-9 h-9 rounded-full border-2 flex items-center justify-center font-bold transition-colors hover:bg-purple-50"
-                              style={{ borderColor: PURPLE, color: PURPLE }}
+                              className="rounded-full border-2 flex items-center justify-center font-bold transition-colors hover:bg-purple-50 active:scale-95"
+                              style={{
+                                borderColor: PURPLE,
+                                color: PURPLE,
+                                width: 44,
+                                height: 44,
+                              }}
+                              aria-label="Diminuir quantidade"
                             >
                               <Minus className="w-4 h-4" />
                             </button>
                             <span
-                              className="w-8 text-center font-black text-lg"
-                              style={{ color: DARK }}
+                              className="font-black text-lg text-center"
+                              style={{ color: DARK, minWidth: 32 }}
                             >
                               {qty}
                             </span>
                             <button
                               onClick={() => handleAdd(product)}
-                              className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white transition-opacity hover:opacity-80"
-                              style={{ background: PURPLE }}
+                              className="rounded-full flex items-center justify-center font-bold text-white transition-opacity hover:opacity-80 active:scale-95"
+                              style={{
+                                background: PURPLE,
+                                width: 44,
+                                height: 44,
+                              }}
+                              aria-label="Aumentar quantidade"
                             >
                               <Plus className="w-4 h-4" />
                             </button>
@@ -293,22 +317,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Floating cart button on mobile */}
+      {/* Botão flutuante do carrinho — bem posicionado no mobile */}
       {totalItems > 0 && (
-        <div className="fixed bottom-6 left-0 right-0 z-20 flex justify-center px-4">
+        <div className="fixed bottom-5 left-0 right-0 z-20 flex justify-center px-4">
           <button
             onClick={() => setIsOpen(true)}
-            className="flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl font-bold transition-transform hover:scale-105 active:scale-95"
-            style={{ background: PURPLE, color: WHITE, minWidth: 280 }}
+            className="flex items-center gap-3 rounded-2xl shadow-2xl font-bold transition-transform hover:scale-105 active:scale-95 w-full"
+            style={{
+              background: PURPLE,
+              color: WHITE,
+              maxWidth: 400,
+              minHeight: 60,
+              paddingLeft: 20,
+              paddingRight: 20,
+            }}
           >
             <div
-              className="w-7 h-7 rounded-full flex items-center justify-center font-black text-sm"
-              style={{ background: GOLD, color: DARK }}
+              className="rounded-full flex items-center justify-center font-black text-sm flex-shrink-0"
+              style={{ background: GOLD, color: DARK, width: 32, height: 32 }}
             >
               {totalItems}
             </div>
-            <span className="flex-1 text-left font-black">Ver Carrinho</span>
-            <span className="font-black" style={{ color: GOLD }}>
+            <span className="flex-1 text-left font-black text-base">Ver Carrinho</span>
+            <span className="font-black text-base" style={{ color: GOLD }}>
               R$ {grandTotal.toFixed(2).replace(".", ",")}
             </span>
           </button>
@@ -319,7 +350,7 @@ export default function Home() {
 
       {/* Rodapé */}
       <footer
-        className="mt-12 py-6 px-4 text-center"
+        className="mt-8 py-6 px-4 text-center"
         style={{ borderTop: `1px solid oklch(0.92 0.03 305)` }}
       >
         <p className="text-xs font-semibold mb-2" style={{ color: "oklch(0.65 0.05 305)" }}>
@@ -328,13 +359,13 @@ export default function Home() {
         <p className="text-xs" style={{ color: "oklch(0.75 0.03 305)" }}>
           Pedidos e dúvidas:{" "}
           <a
-            href="https://wa.me/5521974666669"
+            href="https://wa.me/5521981749450"
             target="_blank"
             rel="noopener noreferrer"
             className="font-bold underline underline-offset-2"
             style={{ color: PURPLE }}
           >
-            (21) 97466-6669
+            (21) 98174-9450
           </a>
         </p>
         <div className="mt-4">
