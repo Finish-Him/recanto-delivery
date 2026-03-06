@@ -165,3 +165,38 @@
 - [x] API: métricas de desempenho (total entregas, faturamento, ticket médio)
 - [x] Página AdminEntregadores: exibir perfil completo com histórico e métricas
 - [x] Formulário de cadastro com campos completos (CPF, turno, admissão)
+
+## Ícones Personalizados (Nano Banana)
+- [x] Gerar ícone: açaí/tigela (menu principal)
+- [x] Gerar ícone: carrinho de compras estilizado
+- [x] Gerar ícone: entregador de moto
+- [x] Gerar ícone: dashboard/painel admin
+- [x] Gerar ícone: cardápio/menu
+- [x] Gerar ícone: relatórios/gráfico
+- [x] Gerar logomarca personalizada para o app
+- [x] Upload para CDN e integrar na aplicação
+
+## Tela de Carregamento (Splash Screen)
+- [x] Criar componente SplashScreen com logo e animação
+- [x] Integrar no App.tsx (exibir na abertura)
+- [x] Animação de entrada e saída suave
+
+## Botões de Voltar
+- [x] Checkout → já tinha botão de voltar
+- [x] OrderTracking → já tinha botão de voltar
+- [x] DeliveryLogin → já tinha botão de voltar
+- [x] DeliveryDashboard → já tinha botão de logout
+- [x] AdminCardapio → usa DashboardLayout (navegação pelo sidebar)
+- [x] AdminRelatorios → usa DashboardLayout (navegação pelo sidebar)
+- [x] AdminEntregadores → usa DashboardLayout (navegação pelo sidebar)
+- [x] Componente BackButton reutilizável criado
+
+## Upgrade Dashboard Admin
+- [x] Cards de métricas em tempo real (pedidos hoje, faturamento, ticket médio, ativos)
+- [x] Filtro por entregador no painel de pedidos
+- [x] Busca por nome do cliente, endereço, telefone ou #ID
+- [x] Ação rápida: botão de avanço de status com um clique
+- [x] Link WhatsApp clicável no card do cliente
+- [x] Link Google Maps clicável no endereço do pedido
+- [x] Exibir troco no card do pedido
+- [x] Contador de pedidos por status no topo (clicável como filtro)

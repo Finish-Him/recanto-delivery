@@ -2,9 +2,11 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
+import { useState, useCallback } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { CartProvider } from "./contexts/CartContext";
+import SplashScreen from "./components/SplashScreen";
 import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -46,6 +48,9 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+  const [splashDone, setSplashDone] = useState(false);
+  const handleSplashFinish = useCallback(() => setSplashDone(true), []);
+
   return (
     <ErrorBoundary>
       <ThemeProvider
@@ -56,6 +61,7 @@ function App() {
           <CartProvider>
             <DeliveryAuthProvider>
               <Toaster />
+              {!splashDone && <SplashScreen onFinish={handleSplashFinish} />}
               <Router />
             </DeliveryAuthProvider>
           </CartProvider>

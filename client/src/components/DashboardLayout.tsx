@@ -37,6 +37,16 @@ const GOLD_SOFT   = "oklch(0.95 0.06 90)";
 const WHITE       = "oklch(0.99 0 0)";
 const DARK        = "oklch(0.12 0 0)";
 
+// ─── Ícones personalizados (CDN) ─────────────────────────────────────────────
+const CUSTOM_ICONS: Record<string, string> = {
+  pedidos:       "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-pedidos-5F6JBY4pcn9QR9DkrBgQop.webp",
+  cardapio:      "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-menu-cardapio-gARLtAU9b8fzatRMEbaeN6.webp",
+  entregadores:  "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-delivery-moto-jD3KPenStzgjwad7AzBPPB.webp",
+  clientes:      "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-clientes-WssdPo2Qmj53TAXCU5e8yK.webp",
+  relatorios:    "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-relatorios-C8JRbZ8Y9KKoE7GuigfCqb.webp",
+  logo:          "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/logo-recanto-app-BiGZ2DoJqLYmsEJWh6h9pU.webp",
+};
+
 // ─── Cores por grupo ─────────────────────────────────────────────────────────
 const groupColors: Record<string, { accent: string; iconColor: string; bg: string }> = {
   "Operações": { accent: GOLD,        iconColor: DARK,   bg: GOLD_SOFT },
@@ -45,29 +55,29 @@ const groupColors: Record<string, { accent: string; iconColor: string; bg: strin
   "Sistema":   { accent: "oklch(0.52 0.05 305)", iconColor: WHITE, bg: "oklch(0.94 0.02 305)" },
 };
 
-type MenuItem = { icon: React.ElementType; label: string; path: string; placeholder?: boolean };
+type MenuItem = { icon: React.ElementType; label: string; path: string; placeholder?: boolean; customIcon?: string };
 type MenuGroup = { title: string; items: MenuItem[] };
 
 const menuGroups: MenuGroup[] = [
   {
     title: "Operações",
     items: [
-      { icon: LayoutDashboard, label: "Pedidos", path: "/admin" },
+      { icon: LayoutDashboard, label: "Pedidos", path: "/admin", customIcon: CUSTOM_ICONS.pedidos },
     ],
   },
   {
     title: "Gestão",
     items: [
-      { icon: UtensilsCrossed, label: "Cardápio",      path: "/admin/cardapio" },
-      { icon: Bike,            label: "Entregadores",  path: "/admin/entregadores" },
-      { icon: Users,           label: "Clientes",      path: "/admin/clientes",      placeholder: true },
+      { icon: UtensilsCrossed, label: "Cardápio",      path: "/admin/cardapio",      customIcon: CUSTOM_ICONS.cardapio },
+      { icon: Bike,            label: "Entregadores",  path: "/admin/entregadores",  customIcon: CUSTOM_ICONS.entregadores },
+      { icon: Users,           label: "Clientes",      path: "/admin/clientes",      customIcon: CUSTOM_ICONS.clientes,  placeholder: true },
       { icon: Package,         label: "Estoque",       path: "/admin/estoque",        placeholder: true },
     ],
   },
   {
     title: "Análise",
     items: [
-      { icon: BarChart3, label: "Relatórios", path: "/admin/relatorios" },
+      { icon: BarChart3, label: "Relatórios", path: "/admin/relatorios", customIcon: CUSTOM_ICONS.relatorios },
     ],
   },
   {
@@ -181,8 +191,19 @@ function DashboardLayoutContent({ children, setSidebarWidth, sidebarWidth }: Das
         >
           <PanelLeft className="h-4 w-4" style={{ color: GOLD }} />
         </button>
-        {!collapsed && (
+        {collapsed ? (
+          <img
+            src={CUSTOM_ICONS.logo}
+            alt="Recanto do Açaí"
+            className="w-8 h-8 rounded-full object-cover shrink-0"
+          />
+        ) : (
           <div className="flex items-center gap-2 min-w-0">
+            <img
+              src={CUSTOM_ICONS.logo}
+              alt="Recanto do Açaí"
+              className="w-9 h-9 rounded-full object-cover shrink-0"
+            />
             <span
               className="font-black text-sm tracking-tight truncate"
               style={{ color: WHITE, fontFamily: "Nunito, sans-serif" }}
@@ -255,14 +276,26 @@ function DashboardLayoutContent({ children, setSidebarWidth, sidebarWidth }: Das
                         }
                       }}
                     >
-                      <item.icon
-                        className="shrink-0"
-                        style={{
-                          width: 16,
-                          height: 16,
-                          color: isActive ? (gc.iconColor === WHITE ? WHITE : DARK) : gc.accent,
-                        }}
-                      />
+                      {item.customIcon ? (
+                        <img
+                          src={item.customIcon}
+                          alt={item.label}
+                          className="shrink-0 rounded-md"
+                          style={{ width: 22, height: 22, objectFit: "contain",
+                            filter: isActive ? "brightness(0) invert(1)" : "none",
+                            opacity: isActive ? 1 : 0.85,
+                          }}
+                        />
+                      ) : (
+                        <item.icon
+                          className="shrink-0"
+                          style={{
+                            width: 16,
+                            height: 16,
+                            color: isActive ? (gc.iconColor === WHITE ? WHITE : DARK) : gc.accent,
+                          }}
+                        />
+                      )}
                       {!collapsed && (
                         <>
                           <span className="font-bold text-sm flex-1 text-left truncate">
