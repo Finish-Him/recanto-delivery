@@ -44,3 +44,14 @@
 
 ## Entrega
 - [x] Checkpoint final
+
+## Redesign - Identidade Visual da Marca
+- [x] Upload do logo oficial do Recanto do Açaí
+- [x] Atualizar CSS global: roxo profundo, amarelo dourado, fundo branco
+- [x] Trocar fonte para Nunito (arredondada, bold) alinhada ao logo
+- [x] Remover estética Memphis e substituir por identidade da marca
+- [x] Redesenhar header com logo real e cores da marca
+- [x] Redesenhar cards de produto com identidade roxa/dourada
+- [x] Redesenhar carrinho (drawer) com nova identidade
+- [x] Redesenhar checkout com nova identidade
+- [x] Redesenhar dashboard admin com nova identidade
