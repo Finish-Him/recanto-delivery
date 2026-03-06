@@ -116,6 +116,7 @@ export default function Checkout() {
     complement: "",
     notes: "",
     paymentMethod: "dinheiro" as PaymentMethod,
+    changeFor: "",
   });
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -172,6 +173,7 @@ export default function Checkout() {
         deliveryFee: deliveryFee.toFixed(2),
         totalAmount: grandTotal.toFixed(2),
         notes: form.notes || undefined,
+        changeFor: form.paymentMethod === "dinheiro" && form.changeFor ? form.changeFor : undefined,
         items: orderItems,
       });
       setOrderId(result.orderId);
@@ -438,6 +440,28 @@ export default function Checkout() {
                   );
                 })}
               </div>
+
+              {/* Campo troco — aparece apenas quando pagamento em dinheiro */}
+              {form.paymentMethod === "dinheiro" && (
+                <div className="mt-4 p-4 rounded-2xl border-2" style={{ borderColor: "oklch(0.77 0.19 90)", background: "oklch(0.98 0.03 90)" }}>
+                  <Label className="block font-bold text-sm mb-1.5" style={{ color: DARK }}>
+                    💵 Troco para quanto?
+                  </Label>
+                  <Input
+                    value={form.changeFor}
+                    onChange={(e) => setForm({ ...form, changeFor: e.target.value })}
+                    placeholder="Ex: 50,00 (deixe em branco se não precisar)"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    className="font-semibold rounded-xl"
+                    style={{ borderColor: "oklch(0.77 0.19 90)", minHeight: 48 }}
+                  />
+                  <p className="text-xs font-semibold mt-1.5" style={{ color: GRAY }}>
+                    Informe o valor da nota que vai pagar para preparamos o troco.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Resumo mobile — aparece entre o form e o botão no mobile */}

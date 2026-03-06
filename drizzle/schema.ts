@@ -68,6 +68,7 @@ export const orders = mysqlTable("orders", {
     .notNull(),
   deliveryFee: decimal("deliveryFee", { precision: 10, scale: 2 }).default("4.90").notNull(),
   totalAmount: decimal("totalAmount", { precision: 10, scale: 2 }).notNull(),
+  changeFor: decimal("changeFor", { precision: 10, scale: 2 }),
   notes: text("notes"),
   stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 255 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

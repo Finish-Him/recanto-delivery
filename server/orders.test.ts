@@ -106,6 +106,29 @@ describe("orders.create", () => {
     expect(result.orderId).toBe(42);
   });
 
+  it("deve criar um pedido com troco (changeFor) quando pagamento em dinheiro", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+
+    const result = await caller.orders.create({
+      customerName: "Maria Santos",
+      address: "Av. Brasil, 456",
+      paymentMethod: "dinheiro",
+      changeFor: "50.00",
+      totalAmount: "23.80",
+      items: [
+        {
+          productId: 1,
+          productName: "Açaí Tradicional 500ml",
+          quantity: 1,
+          unitPrice: "18.90",
+          subtotal: "18.90",
+        },
+      ],
+    });
+
+    expect(result.orderId).toBe(42);
+  });
+
   it("deve rejeitar pedido com nome muito curto", async () => {
     const caller = appRouter.createCaller(createPublicContext());
 

@@ -77,6 +77,7 @@ export const appRouter = router({
           ]),
           deliveryFee: z.string().default("4.90"),
           totalAmount: z.string(),
+          changeFor: z.string().optional(),
           notes: z.string().optional(),
           items: z.array(orderItemSchema).min(1),
         })
@@ -94,6 +95,7 @@ export const appRouter = router({
             paymentMethod: orderData.paymentMethod,
             deliveryFee: orderData.deliveryFee ?? "4.90",
             totalAmount: orderData.totalAmount,
+            changeFor: orderData.changeFor ?? null,
             notes: orderData.notes ?? null,
             status: "pendente",
           },
@@ -114,7 +116,7 @@ export const appRouter = router({
 
         await notifyOwner({
           title: `\uD83D\uDEF5 Novo pedido #${orderId} - ${orderData.customerName}`,
-          content: `**Pedido #${orderId}**\n\n**Cliente:** ${orderData.customerName}\n**Telefone:** ${orderData.customerPhone || "Não informado"}\n**Endereço:** ${orderData.address}${orderData.neighborhood ? `, ${orderData.neighborhood}` : ""}${orderData.complement ? ` - ${orderData.complement}` : ""}\n\n**Itens:** ${itemsSummary}\n**Frete:** R$ ${orderData.deliveryFee}\n\n**Total:** R$ ${orderData.totalAmount}\n**Pagamento:** ${paymentLabels[orderData.paymentMethod] || orderData.paymentMethod}${orderData.notes ? `\n\n**Observações:** ${orderData.notes}` : ""}`,
+          content: `**Pedido #${orderId}**\n\n**Cliente:** ${orderData.customerName}\n**Telefone:** ${orderData.customerPhone || "Não informado"}\n**Endereço:** ${orderData.address}${orderData.neighborhood ? `, ${orderData.neighborhood}` : ""}${orderData.complement ? ` - ${orderData.complement}` : ""}\n\n**Itens:** ${itemsSummary}\n**Frete:** R$ ${orderData.deliveryFee}\n\n**Total:** R$ ${orderData.totalAmount}\n**Pagamento:** ${paymentLabels[orderData.paymentMethod] || orderData.paymentMethod}${orderData.changeFor ? `\n**Troco para:** R$ ${orderData.changeFor}` : ""}${orderData.notes ? `\n\n**Observações:** ${orderData.notes}` : ""}`,
         });
 
         return { orderId };

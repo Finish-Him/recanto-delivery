@@ -96,3 +96,9 @@
 - [x] Criar página de cadastro de clientes /cadastro
 - [x] Criar página de instalação PWA /instalar com instruções iOS e Android
 - [x] Adicionar link "Instalar App" no header/rodapé
+
+## Melhorias - Checkout, Cardápio e Admin
+- [x] Campo "troco para" no checkout quando pagamento em dinheiro
+- [x] Atualizar API/schema para salvar valor do troco no pedido
+- [x] Remover imagens de todos os produtos (placeholder visual limpo)
+- [x] Expandir sidebar do admin com menus organizados por seção

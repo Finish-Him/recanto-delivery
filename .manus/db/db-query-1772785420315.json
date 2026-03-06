@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE products SET imageUrl = NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3RJAdkxkLcRXBfg.fe15c385d774 --database Z28cUTNS5S5j4gtNT63Tte --execute UPDATE products SET imageUrl = NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 63
+}

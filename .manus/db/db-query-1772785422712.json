@@ -1,0 +1,45 @@
+{
+  "query": "SELECT id, name, imageUrl FROM products;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3RJAdkxkLcRXBfg.fe15c385d774 --database Z28cUTNS5S5j4gtNT63Tte --execute SELECT id, name, imageUrl FROM products;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Açaí Tradicional 500ml",
+      "imageUrl": "NULL"
+    },
+    {
+      "id": "2",
+      "name": "Açaí Tradicional 300ml",
+      "imageUrl": "NULL"
+    },
+    {
+      "id": "3",
+      "name": "Açaí Tradicional 500ml",
+      "imageUrl": "NULL"
+    },
+    {
+      "id": "4",
+      "name": "Açaí de Garrafa 300ml",
+      "imageUrl": "NULL"
+    },
+    {
+      "id": "5",
+      "name": "Açaí de Garrafa 500ml",
+      "imageUrl": "NULL"
+    },
+    {
+      "id": "6",
+      "name": "Açaí de KitKat 500ml",
+      "imageUrl": "NULL"
+    },
+    {
+      "id": "7",
+      "name": "Combo Irresistível",
+      "imageUrl": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\timageUrl\n1\tAçaí Tradicional 500ml\tNULL\n2\tAçaí Tradicional 300ml\tNULL\n3\tAçaí Tradicional 500ml\tNULL\n4\tAçaí de Garrafa 300ml\tNULL\n5\tAçaí de Garrafa 500ml\tNULL\n6\tAçaí de KitKat 500ml\tNULL\n7\tCombo Irresistível\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 65
+}
