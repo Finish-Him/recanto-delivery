@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users, UtensilsCrossed, BarChart3, Settings, Package } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, UtensilsCrossed, BarChart3, Settings, Package, Bike } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -42,6 +42,7 @@ const menuGroups: MenuGroup[] = [
     title: "Gestão",
     items: [
       { icon: UtensilsCrossed, label: "Cardápio", path: "/admin/cardapio" },
+      { icon: Bike, label: "Entregadores", path: "/admin/entregadores" },
       { icon: Users, label: "Clientes", path: "/admin/clientes", placeholder: true },
       { icon: Package, label: "Estoque", path: "/admin/estoque", placeholder: true },
     ],

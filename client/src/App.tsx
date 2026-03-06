@@ -11,6 +11,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminCardapio from "./pages/AdminCardapio";
 import AdminRelatorios from "./pages/AdminRelatorios";
+import AdminEntregadores from "./pages/AdminEntregadores";
+import DeliveryLogin from "./pages/DeliveryLogin";
+import DeliveryDashboard from "./pages/DeliveryDashboard";
+import { DeliveryAuthProvider } from "./contexts/DeliveryAuthContext";
 import OrderTracking from "./pages/OrderTracking";
 import Register from "./pages/Register";
 import InstallApp from "./pages/InstallApp";
@@ -23,6 +27,9 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/cardapio" component={AdminCardapio} />
       <Route path="/admin/relatorios" component={AdminRelatorios} />
+      <Route path="/admin/entregadores" component={AdminEntregadores} />
+      <Route path="/entregador/login" component={DeliveryLogin} />
+      <Route path="/entregador/dashboard" component={DeliveryDashboard} />
       <Route path="/login" component={AdminLogin} />
       <Route path="/pedido/:id" component={OrderTracking} />
       <Route path="/cadastro" component={Register} />
@@ -47,8 +54,10 @@ function App() {
       >
         <TooltipProvider>
           <CartProvider>
-            <Toaster />
-            <Router />
+            <DeliveryAuthProvider>
+              <Toaster />
+              <Router />
+            </DeliveryAuthProvider>
           </CartProvider>
         </TooltipProvider>
       </ThemeProvider>

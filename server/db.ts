@@ -1,6 +1,6 @@
 import { eq, desc, gte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, InsertProduct, users, products, orders, orderItems, customers, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer } from "../drizzle/schema";
+import { InsertUser, InsertProduct, users, products, orders, orderItems, customers, deliveryPersons, InsertOrder, InsertOrderItem, Order, OrderItem, Product, Customer, InsertCustomer, DeliveryPerson, InsertDeliveryPerson } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -295,6 +295,78 @@ export async function getOrderSummaryStats(): Promise<SummaryStats> {
     avgTicket: total > 0 ? revenue / total : 0,
     pendingOrders: Number(pending?.count ?? 0),
   };
+}
+
+// ─── Delivery Persons ────────────────────────────────────────────────────────────────
+
+export async function getAllDeliveryPersons(): Promise<DeliveryPerson[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(deliveryPersons).orderBy(desc(deliveryPersons.createdAt));
+}
+
+export async function getDeliveryPersonByPin(pin: string): Promise<DeliveryPerson | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db
+    .select()
+    .from(deliveryPersons)
+    .where(eq(deliveryPersons.pin, pin))
+    .limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getDeliveryPersonById(id: number): Promise<DeliveryPerson | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db
+    .select()
+    .from(deliveryPersons)
+    .where(eq(deliveryPersons.id, id))
+    .limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function createDeliveryPerson(
+  data: Omit<InsertDeliveryPerson, "id" | "createdAt" | "updatedAt">
+): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(deliveryPersons).values([data]);
+  return (result as { insertId: number }).insertId;
+}
+
+export async function updateDeliveryPerson(
+  id: number,
+  data: Partial<Omit<InsertDeliveryPerson, "id" | "createdAt" | "updatedAt">>
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(deliveryPersons).set(data).where(eq(deliveryPersons.id, id));
+}
+
+export async function assignOrderToDeliveryPerson(
+  orderId: number,
+  deliveryPersonId: number | null
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(orders).set({ deliveryPersonId }).where(eq(orders.id, orderId));
+}
+
+export async function getOrdersByDeliveryPerson(deliveryPersonId: number): Promise<OrderWithItems[]> {
+  const db = await getDb();
+  if (!db) return [];
+  const assignedOrders = await db
+    .select()
+    .from(orders)
+    .where(eq(orders.deliveryPersonId, deliveryPersonId))
+    .orderBy(desc(orders.createdAt));
+  const allItems = await db.select().from(orderItems);
+  return assignedOrders.map((order) => ({
+    ...order,
+    items: allItems.filter((item) => item.orderId === order.id),
+  }));
 }
 
 // ─── Customers ──────────────────────────────────────────────────────────────────

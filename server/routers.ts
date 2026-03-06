@@ -22,6 +22,13 @@ import {
   getOrderStatsByDay,
   getOrderStatsByPayment,
   getOrderSummaryStats,
+  getAllDeliveryPersons,
+  getDeliveryPersonByPin,
+  getDeliveryPersonById,
+  createDeliveryPerson,
+  updateDeliveryPerson,
+  assignOrderToDeliveryPerson,
+  getOrdersByDeliveryPerson,
 } from "./db";
 import { notifyOwner } from "./_core/notification";
 import Stripe from "stripe";
@@ -290,6 +297,118 @@ export const appRouter = router({
     list: adminProcedure.query(async () => {
       return getAllCustomers();
     }),
+  }),
+
+  // ─── Delivery Persons ──────────────────────────────────────────────────────────────────────────────
+  delivery: router({
+    // Login por PIN (público — o entregador não tem conta OAuth)
+    login: publicProcedure
+      .input(z.object({ pin: z.string().min(4).max(6) }))
+      .mutation(async ({ input }) => {
+        const person = await getDeliveryPersonByPin(input.pin);
+        if (!person || !person.active) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "PIN inválido ou entregador inativo." });
+        }
+        return {
+          id: person.id,
+          name: person.name,
+          phone: person.phone,
+        };
+      }),
+
+    // Buscar dados do entregador por ID (público — usado pelo frontend após login)
+    getById: publicProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        const person = await getDeliveryPersonById(input.id);
+        if (!person || !person.active) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Entregador não encontrado." });
+        }
+        return { id: person.id, name: person.name, phone: person.phone };
+      }),
+
+    // Pedidos atribuídos ao entregador (público — autenticado pelo ID salvo no localStorage)
+    myOrders: publicProcedure
+      .input(z.object({ deliveryPersonId: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        const person = await getDeliveryPersonById(input.deliveryPersonId);
+        if (!person || !person.active) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "Entregador não autorizado." });
+        }
+        return getOrdersByDeliveryPerson(input.deliveryPersonId);
+      }),
+
+    // Atualizar status do pedido (pelo entregador — apenas saiu_entrega e entregue)
+    updateOrderStatus: publicProcedure
+      .input(
+        z.object({
+          orderId: z.number().int().positive(),
+          deliveryPersonId: z.number().int().positive(),
+          status: z.enum(["saiu_entrega", "entregue"]),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const person = await getDeliveryPersonById(input.deliveryPersonId);
+        if (!person || !person.active) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "Entregador não autorizado." });
+        }
+        const order = await getOrderById(input.orderId);
+        if (!order || order.deliveryPersonId !== input.deliveryPersonId) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Pedido não atribuído a este entregador." });
+        }
+        await updateOrderStatus(input.orderId, input.status);
+        return { success: true };
+      }),
+
+    // Admin: listar todos os entregadores
+    list: adminProcedure.query(async () => {
+      return getAllDeliveryPersons();
+    }),
+
+    // Admin: criar entregador
+    create: adminProcedure
+      .input(
+        z.object({
+          name: z.string().min(2),
+          phone: z.string().min(10),
+          pin: z.string().min(4).max(6),
+          active: z.boolean().default(true),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const id = await createDeliveryPerson(input);
+        return { id };
+      }),
+
+    // Admin: atualizar entregador
+    update: adminProcedure
+      .input(
+        z.object({
+          id: z.number().int().positive(),
+          name: z.string().min(2).optional(),
+          phone: z.string().min(10).optional(),
+          pin: z.string().min(4).max(6).optional(),
+          active: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateDeliveryPerson(id, data);
+        return { success: true };
+      }),
+
+    // Admin: atribuir pedido a entregador
+    assignOrder: adminProcedure
+      .input(
+        z.object({
+          orderId: z.number().int().positive(),
+          deliveryPersonId: z.number().int().positive().nullable(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await assignOrderToDeliveryPerson(input.orderId, input.deliveryPersonId);
+        return { success: true };
+      }),
   }),
 
   // ─── Stripe ──────────────────────────────────────────────────────────────────

@@ -33,6 +33,21 @@ vi.mock("./db", () => ({
   createCustomer: vi.fn().mockResolvedValue(5),
   getCustomerByPhone: vi.fn().mockResolvedValue(null),
   getAllCustomers: vi.fn().mockResolvedValue([]),
+  getAllDeliveryPersons: vi.fn().mockResolvedValue([]),
+  getDeliveryPersonByPin: vi.fn().mockImplementation((pin: string) =>
+    pin === "1234"
+      ? Promise.resolve({ id: 1, name: "João Entregador", phone: "21999999999", pin: "1234", active: true, createdAt: new Date(), updatedAt: new Date() })
+      : Promise.resolve(null)
+  ),
+  getDeliveryPersonById: vi.fn().mockImplementation((id: number) =>
+    id === 1
+      ? Promise.resolve({ id: 1, name: "João Entregador", phone: "21999999999", pin: "1234", active: true, createdAt: new Date(), updatedAt: new Date() })
+      : Promise.resolve(null)
+  ),
+  createDeliveryPerson: vi.fn().mockResolvedValue(1),
+  updateDeliveryPerson: vi.fn().mockResolvedValue(undefined),
+  assignOrderToDeliveryPerson: vi.fn().mockResolvedValue(undefined),
+  getOrdersByDeliveryPerson: vi.fn().mockResolvedValue([]),
 }));
 
 // Mock das notificações
@@ -208,6 +223,46 @@ describe("products.create (admin)", () => {
       available: true,
     });
     expect(result.productId).toBe(10);
+  });
+});
+
+describe("delivery.login", () => {
+  it("deve retornar dados do entregador com PIN válido", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    const result = await caller.delivery.login({ pin: "1234" });
+    expect(result.id).toBe(1);
+    expect(result.name).toBe("João Entregador");
+  });
+
+  it("deve rejeitar PIN inválido", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(caller.delivery.login({ pin: "9999" })).rejects.toThrow();
+  });
+});
+
+describe("delivery.myOrders", () => {
+  it("deve retornar pedidos do entregador autenticado", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    const orders = await caller.delivery.myOrders({ deliveryPersonId: 1 });
+    expect(Array.isArray(orders)).toBe(true);
+  });
+
+  it("deve rejeitar entregador inexistente", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(caller.delivery.myOrders({ deliveryPersonId: 999 })).rejects.toThrow();
+  });
+});
+
+describe("delivery.list (admin)", () => {
+  it("deve listar entregadores para admin", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    const list = await caller.delivery.list();
+    expect(Array.isArray(list)).toBe(true);
+  });
+
+  it("deve bloquear acesso para não-admin", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(caller.delivery.list()).rejects.toThrow();
   });
 });
 

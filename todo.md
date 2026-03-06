@@ -121,3 +121,25 @@
 - [x] Cards de métricas: total de pedidos, faturamento, ticket médio
 - [x] Gráfico de distribuição por forma de pagamento
 - [x] Remover placeholder "Em breve" do item Relatórios no sidebar
+
+## Dashboard do Entregador
+- [x] Adicionar role "entregador" no schema de usuários
+- [x] Adicionar tabela de entregadores (nome, telefone, ativo)
+- [x] Adicionar campo deliveryPersonId na tabela de pedidos
+- [x] Migrar schema com pnpm db:push
+- [x] API: login do entregador (por código/PIN)
+- [x] API: listar pedidos atribuídos ao entregador
+- [x] API: atualizar status de entrega (saiu_entrega → entregue)
+- [x] API: listar todos os entregadores (admin)
+- [x] API: atribuir pedido a entregador (admin)
+- [x] Página /entregador/login com autenticação por PIN
+- [x] Layout próprio do entregador (mobile-first, sem sidebar)
+- [x] Página /entregador/dashboard com pedidos do dia
+- [x] Card de pedido com endereço, cliente, itens e mapa/link
+- [x] Botão "Confirmar Retirada" (em_preparo → saiu_entrega)
+- [x] Botão "Confirmar Entrega" (saiu_entrega → entregue)
+- [x] Seção de contato com a loja (WhatsApp direto)
+- [x] Exibir dados completos do cliente (nome, telefone, endereço)
+- [x] Link para abrir endereço no Google Maps / Waze
+- [x] Admin: página /admin/entregadores para gerenciar entregadores
+- [x] Admin: botão para atribuir pedido a entregador no dashboard

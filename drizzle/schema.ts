@@ -71,6 +71,7 @@ export const orders = mysqlTable("orders", {
   changeFor: decimal("changeFor", { precision: 10, scale: 2 }),
   notes: text("notes"),
   stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 255 }),
+  deliveryPersonId: int("deliveryPersonId"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -96,6 +97,20 @@ export const orderItems = mysqlTable("orderItems", {
 
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = typeof orderItems.$inferInsert;
+
+// Tabela de entregadores
+export const deliveryPersons = mysqlTable("deliveryPersons", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull(),
+  pin: varchar("pin", { length: 6 }).notNull(), // PIN de 4-6 dígitos para login
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DeliveryPerson = typeof deliveryPersons.$inferSelect;
+export type InsertDeliveryPerson = typeof deliveryPersons.$inferInsert;
 
 // Tabela de clientes cadastrados (sem OAuth, cadastro simples)
 export const customers = mysqlTable("customers", {
