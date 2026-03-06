@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Plus, Minus, MapPin, Clock, Star, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 
 const PURPLE = "oklch(0.38 0.22 305)";
 const PURPLE_MED = "oklch(0.46 0.25 305)";
@@ -43,7 +44,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen relative" style={{ background: WHITE }}>
+    <div className="min-h-screen relative animate-page-enter" style={{ background: WHITE }}>
       <MemphisShapes />
 
       {/* Header — altura mínima 64px, ícones e botões com área de toque ≥48px */}
@@ -109,7 +110,11 @@ export default function Home() {
               }}
               aria-label="Abrir carrinho"
             >
-              <ShoppingCart className="w-5 h-5" />
+              <img
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-cart-mXzBJNJbNmhGCiNwJkdaHT.webp"
+                alt="Carrinho"
+                className="w-5 h-5 object-contain"
+              />
               <span className="hidden sm:inline font-black">Carrinho</span>
               {totalItems > 0 && (
                 <span
@@ -197,30 +202,19 @@ export default function Home() {
 
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[1, 2, 3].map((n) => (
-                <div
-                  key={n}
-                  className="rounded-2xl overflow-hidden animate-pulse"
-                  style={{ background: WHITE, border: `2px solid ${BORDER}` }}
-                >
-                  <div className="h-48 bg-gray-100" />
-                  <div className="p-5 space-y-3">
-                    <div className="h-5 bg-gray-100 rounded w-3/4" />
-                    <div className="h-4 bg-gray-100 rounded w-full" />
-                    <div className="h-4 bg-gray-100 rounded w-2/3" />
-                  </div>
-                </div>
+              {[1, 2, 3, 4, 5, 6].map((n) => (
+                <ProductCardSkeleton key={n} />
               ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {products?.map((product) => {
+              {products?.map((product, idx) => {
                 const qty = getItemQuantity(product.id);
                 return (
                   <div
                     key={product.id}
-                    className="rounded-2xl overflow-hidden shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
-                    style={{ background: WHITE, border: `2px solid ${BORDER}` }}
+                    className="rounded-2xl overflow-hidden shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer animate-slide-up"
+                    style={{ background: WHITE, border: `2px solid ${BORDER}`, animationDelay: `${idx * 60}ms` }}
                     onClick={() => navigate(`/produto/${product.id}`)}
                   >
                     {/* Product image */}
@@ -232,11 +226,11 @@ export default function Home() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-full h-full flex items-center justify-center" style={{ background: "oklch(0.95 0.04 305)" }}>
                           <img
-                            src={LOGO_URL}
-                            alt="Recanto do Açaí"
-                            className="w-28 h-28 object-contain opacity-30"
+                            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-acai-bowl-Gy4sBzJfGHGJFVTHDRDCdB.webp"
+                            alt="Açaí"
+                            className="w-24 h-24 object-contain"
                           />
                         </div>
                       )}
@@ -393,7 +387,7 @@ export default function Home() {
           </a>
           <span className="text-xs" style={{ color: "oklch(0.75 0.03 305)" }}>•</span>
           <a
-            href="/instalar"
+            href="/app"
             className="text-xs font-bold underline underline-offset-2 transition-opacity hover:opacity-80"
             style={{ color: PURPLE }}
           >

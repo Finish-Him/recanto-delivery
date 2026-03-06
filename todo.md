@@ -234,3 +234,25 @@
 - [x] DeliveryDashboard: exibir adicionais e observações no card do pedido
 - [x] Backend: addonsJson e notes adicionados na tabela orderItems (migração aplicada)
 - [x] Backend: Checkout envia selectedAddons e notes por item ao criar pedido
+
+## Limpeza e Refatoração (Foco Cliente + Estabelecimento)
+- [x] Remover páginas do entregador (DeliveryLogin, DeliveryDashboard, DeliveryAuthContext)
+- [x] Remover rotas /entregador/* do App.tsx
+- [x] Remover item "Entregadores" do sidebar admin
+- [x] Remover página AdminEntregadores.tsx
+- [x] Remover InstallApp.tsx e ComponentShowcase.tsx (redundantes)
+- [x] Rota /instalar redirecionada para /app
+
+## Ícones Personalizados no App (Cliente)
+- [x] Substituir ícone genérico do carrinho no header por ícone nano banana
+- [x] Substituir placeholder de produto sem foto pelo ícone personalizado de açaí (Home)
+- [x] Substituir placeholder de produto sem foto pelo ícone personalizado de açaí (ProductDetail)
+
+## Animações de Transição e Carregamento
+- [x] Animações globais definidas no index.css (page-enter, slide-up, fade-in, cart-bounce, shimmer, pop-in)
+- [x] Componente PageTransition reutilizável criado
+- [x] Componente ProductCardSkeleton com shimmer criado
+- [x] Skeleton loader nos cards de produtos (Home) — 6 skeletons com shimmer
+- [x] Skeleton loader na página de produto (/produto/:id) — hero + conteúdo
+- [x] Animação de entrada animate-page-enter em Home, ProductDetail, Checkout, OrderTracking
+- [x] Animação animate-slide-up em cascata nos cards de produto (delay por índice)

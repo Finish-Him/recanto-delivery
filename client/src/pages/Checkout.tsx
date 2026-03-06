@@ -288,7 +288,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "oklch(0.97 0.01 305)" }}>
+    <div className="min-h-screen animate-page-enter" style={{ background: "oklch(0.97 0.01 305)" }}>
       <CheckoutHeader title="Finalizar Pedido" onBack={() => navigate("/")} />
 
       <div className="container py-5 pb-10">

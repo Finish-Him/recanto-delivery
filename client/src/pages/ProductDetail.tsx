@@ -158,13 +158,17 @@ export default function ProductDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: WHITE }}>
-        <div className="flex flex-col items-center gap-4">
-          <div
-            className="rounded-full animate-spin border-4"
-            style={{ borderColor: PURPLE, borderTopColor: "transparent", width: 48, height: 48 }}
-          />
-          <p className="font-bold text-sm" style={{ color: GRAY }}>Carregando produto...</p>
+      <div className="min-h-screen flex flex-col" style={{ background: WHITE }}>
+        {/* Hero skeleton */}
+        <div className="skeleton" style={{ height: 280 }} />
+        <div className="p-5 space-y-4 max-w-lg mx-auto w-full">
+          <div className="skeleton h-8 w-3/4 rounded-xl" />
+          <div className="skeleton h-5 w-1/3 rounded-lg" />
+          <div className="space-y-2 pt-2">
+            <div className="skeleton h-4 w-full rounded" />
+            <div className="skeleton h-4 w-5/6 rounded" />
+          </div>
+          <div className="skeleton h-12 w-full rounded-2xl mt-4" />
         </div>
       </div>
     );
@@ -183,7 +187,7 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: WHITE }}>
+    <div className="min-h-screen flex flex-col animate-page-enter" style={{ background: WHITE }}>
       {/* Hero com foto ou placeholder */}
       <div className="relative" style={{ minHeight: 280 }}>
         {product.imageUrl ? (
@@ -198,7 +202,11 @@ export default function ProductDetail() {
             className="w-full flex items-center justify-center"
             style={{ height: 280, background: `linear-gradient(135deg, ${PURPLE} 0%, oklch(0.55 0.22 305) 100%)` }}
           >
-            <span style={{ fontSize: 96 }}>🍇</span>
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-acai-bowl-Gy4sBzJfGHGJFVTHDRDCdB.webp"
+              alt="Açaí"
+              className="w-40 h-40 object-contain drop-shadow-xl"
+            />
           </div>
         )}
         {/* Overlay gradiente no fundo da imagem */}

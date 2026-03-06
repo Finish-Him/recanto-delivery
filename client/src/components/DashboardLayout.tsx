@@ -69,7 +69,6 @@ const menuGroups: MenuGroup[] = [
     title: "Gestão",
     items: [
       { icon: UtensilsCrossed, label: "Cardápio",      path: "/admin/cardapio",      customIcon: CUSTOM_ICONS.cardapio },
-      { icon: Bike,            label: "Entregadores",  path: "/admin/entregadores",  customIcon: CUSTOM_ICONS.entregadores },
       { icon: Users,           label: "Clientes",      path: "/admin/clientes",      customIcon: CUSTOM_ICONS.clientes,  placeholder: true },
       { icon: Package,         label: "Estoque",       path: "/admin/estoque",        placeholder: true },
     ],

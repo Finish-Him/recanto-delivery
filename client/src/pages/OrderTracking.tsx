@@ -138,7 +138,7 @@ export default function OrderTracking() {
   const subtotal = (parseFloat(order.totalAmount) - parseFloat(order.deliveryFee ?? "4.90")).toFixed(2);
 
   return (
-    <div className="min-h-screen" style={{ background: BG }}>
+    <div className="min-h-screen animate-page-enter" style={{ background: BG }}>
       {/* Header roxo */}
       <div
         className="px-4 pt-10 pb-16 text-center relative"
