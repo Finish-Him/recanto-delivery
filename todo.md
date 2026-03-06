@@ -143,3 +143,10 @@
 - [x] Link para abrir endereço no Google Maps / Waze
 - [x] Admin: página /admin/entregadores para gerenciar entregadores
 - [x] Admin: botão para atribuir pedido a entregador no dashboard
+
+## Admin - Seletor de Entregador no Painel de Pedidos
+- [x] Exibir entregador atual no card/detalhe do pedido no admin
+- [x] Seletor dropdown de entregadores ativos no card do pedido
+- [x] Atribuir/reatribuir entregador com um clique (sem modal separado)
+- [x] Feedback visual imediato ao atribuir (otimistic update)
+- [x] Exibir badge do entregador no card do pedido na lista

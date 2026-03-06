@@ -22,6 +22,8 @@ import {
   MapPin,
   Phone,
   CreditCard,
+  Bike,
+  UserX,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -62,10 +64,49 @@ export default function AdminDashboard() {
     refetchInterval: 15000,
   });
 
+  const utils = trpc.useUtils();
+
   const updateStatus = trpc.orders.updateStatus.useMutation({
     onSuccess: () => { toast.success("Status atualizado!"); refetch(); },
     onError: () => toast.error("Erro ao atualizar status."),
   });
+
+  const assignDelivery = trpc.delivery.assignOrder.useMutation({
+    onMutate: async ({ orderId, deliveryPersonId }) => {
+      await utils.orders.list.cancel();
+      const prev = utils.orders.list.getData();
+      utils.orders.list.setData(undefined, (old) =>
+        old?.map((o) =>
+          o.id === orderId
+            ? {
+                ...o,
+                deliveryPersonId,
+                deliveryPersonName:
+                  deliveryPersonId === null
+                    ? null
+                    : (deliveryPersons?.find((p) => p.id === deliveryPersonId)?.name ?? null),
+              }
+            : o
+        )
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) utils.orders.list.setData(undefined, ctx.prev);
+      toast.error("Erro ao atribuir entregador.");
+    },
+    onSettled: () => utils.orders.list.invalidate(),
+    onSuccess: (_data, vars) => {
+      if (vars.deliveryPersonId === null) {
+        toast.success("Entregador removido do pedido.");
+      } else {
+        const name = deliveryPersons?.find((p) => p.id === vars.deliveryPersonId)?.name;
+        toast.success(`Pedido atribuído a ${name ?? "entregador"}.`);
+      }
+    },
+  });
+
+  const { data: deliveryPersons } = trpc.delivery.list.useQuery();
 
   if (loading) {
     return (
@@ -346,6 +387,59 @@ export default function AdminDashboard() {
                   <p className="text-xs mb-3" style={{ color: "oklch(0.65 0.02 305)" }}>
                     {new Date(order.createdAt).toLocaleString("pt-BR")}
                   </p>
+
+                  {/* Delivery person selector */}
+                  <div className="mb-2">
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <Bike className="w-3.5 h-3.5" style={{ color: PURPLE }} />
+                      <span className="text-xs font-black" style={{ color: DARK }}>Entregador</span>
+                      {(order as any).deliveryPersonId && (
+                        <span
+                          className="ml-auto text-xs font-black px-2 py-0.5 rounded-full"
+                          style={{ background: "oklch(0.95 0.03 305)", color: PURPLE }}
+                        >
+                          {(order as any).deliveryPersonName ?? "Atribuído"}
+                        </span>
+                      )}
+                    </div>
+                    <Select
+                      value={String((order as any).deliveryPersonId ?? "none")}
+                      onValueChange={(val) =>
+                        assignDelivery.mutate({
+                          orderId: order.id,
+                          deliveryPersonId: val === "none" ? null : Number(val),
+                        })
+                      }
+                    >
+                      <SelectTrigger
+                        className="w-full font-bold text-sm rounded-xl border-2"
+                        style={{
+                          borderColor: (order as any).deliveryPersonId ? PURPLE : BORDER,
+                          background: (order as any).deliveryPersonId ? "oklch(0.96 0.02 305)" : WHITE,
+                        }}
+                      >
+                        <SelectValue placeholder="Sem entregador" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none" className="font-semibold">
+                          <span className="flex items-center gap-2">
+                            <UserX className="w-3.5 h-3.5" />
+                            Sem entregador
+                          </span>
+                        </SelectItem>
+                        {deliveryPersons
+                          ?.filter((p) => p.active)
+                          .map((p) => (
+                            <SelectItem key={p.id} value={String(p.id)} className="font-semibold">
+                              <span className="flex items-center gap-2">
+                                <Bike className="w-3.5 h-3.5" />
+                                {p.name}
+                              </span>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
                   {/* Status select */}
                   <Select

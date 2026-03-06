@@ -171,15 +171,27 @@ export async function createOrder(input: CreateOrderInput): Promise<number> {
 
 export type OrderWithItems = Order & { items: OrderItem[] };
 
-export async function getAllOrders(): Promise<OrderWithItems[]> {
+export async function getAllOrders(): Promise<(OrderWithItems & { deliveryPersonName: string | null })[]> {
   const db = await getDb();
   if (!db) return [];
 
   const allOrders = await db.select().from(orders).orderBy(desc(orders.createdAt));
   const allItems = await db.select().from(orderItems);
 
+  // Fetch delivery person names for orders that have one
+  const deliveryPersonIds = Array.from(new Set(allOrders.map((o) => o.deliveryPersonId).filter((id): id is number => id !== null && id !== undefined)));
+  let deliveryPersonMap: Record<number, string> = {};
+  if (deliveryPersonIds.length > 0) {
+    const persons = await db
+      .select({ id: deliveryPersons.id, name: deliveryPersons.name })
+      .from(deliveryPersons)
+      .where(sql`${deliveryPersons.id} IN (${sql.join(deliveryPersonIds.map((id) => sql`${id}`), sql`, `)})`);
+    deliveryPersonMap = Object.fromEntries(persons.map((p) => [p.id, p.name]));
+  }
+
   return allOrders.map((order) => ({
     ...order,
+    deliveryPersonName: order.deliveryPersonId ? (deliveryPersonMap[order.deliveryPersonId] ?? null) : null,
     items: allItems.filter((item) => item.orderId === order.id),
   }));
 }
