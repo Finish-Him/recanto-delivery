@@ -42,6 +42,8 @@ type OrderItem = {
   quantity: number;
   unitPrice: string;
   subtotal: string;
+  addonsJson?: string | null;
+  notes?: string | null;
 };
 
 type Order = {
@@ -186,17 +188,37 @@ function OrderCard({ order, deliveryPersonId }: { order: Order; deliveryPersonId
             <p className="font-black text-sm mb-2" style={{ color: DARK }}>
               Itens do Pedido
             </p>
-            <div className="space-y-1.5">
-              {order.items.map((item) => (
-                <div key={item.id} className="flex justify-between items-center gap-2">
-                  <span className="font-semibold text-sm" style={{ color: DARK }}>
-                    {item.quantity}x {item.productName}
-                  </span>
-                  <span className="font-bold text-sm" style={{ color: GRAY }}>
-                    {formatCurrency(item.subtotal)}
-                  </span>
-                </div>
-              ))}
+            <div className="space-y-2">
+              {order.items.map((item) => {
+                const addons = item.addonsJson ? (() => { try { return JSON.parse(item.addonsJson) as Array<{addonName: string; price: number}>; } catch { return []; } })() : [];
+                return (
+                  <div key={item.id} className="space-y-0.5">
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="font-semibold text-sm" style={{ color: DARK }}>
+                        {item.quantity}x {item.productName}
+                      </span>
+                      <span className="font-bold text-sm" style={{ color: GRAY }}>
+                        {formatCurrency(item.subtotal)}
+                      </span>
+                    </div>
+                    {addons.length > 0 && (
+                      <div className="pl-4 space-y-0.5">
+                        {addons.map((addon, idx) => (
+                          <div key={idx} className="flex justify-between text-xs" style={{ color: GRAY }}>
+                            <span>└ {addon.addonName}</span>
+                            {addon.price > 0 && <span>+{formatCurrency(String(addon.price))}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {item.notes && (
+                      <p className="pl-4 text-xs italic" style={{ color: ORANGE }}>
+                        📝 {item.notes}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
               <div
                 className="flex justify-between items-center gap-2 pt-1.5 mt-1.5"
                 style={{ borderTop: `1px dashed ${BORDER}` }}

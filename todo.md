@@ -227,3 +227,10 @@
 - [x] Atualizar carrinho para suportar adicionais e observações
 - [x] Home.tsx: clicar no card navega para /produto/:id
 - [x] AdminCardapio: painel lateral para gerenciar adicionais por produto
+
+## Exibição de Adicionais e Observações
+- [x] CartDrawer: listar adicionais selecionados e observações por item
+- [x] AdminDashboard: exibir adicionais e observações no card do pedido
+- [x] DeliveryDashboard: exibir adicionais e observações no card do pedido
+- [x] Backend: addonsJson e notes adicionados na tabela orderItems (migração aplicada)
+- [x] Backend: Checkout envia selectedAddons e notes por item ao criar pedido

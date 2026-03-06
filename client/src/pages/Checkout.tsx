@@ -161,7 +161,9 @@ export default function Checkout() {
         productName: item.productName,
         quantity: item.quantity,
         unitPrice: item.unitPrice.toFixed(2),
-        subtotal: (item.unitPrice * item.quantity).toFixed(2),
+        subtotal: ((item.unitPrice + item.addonsTotal) * item.quantity).toFixed(2),
+        selectedAddons: item.selectedAddons.length > 0 ? item.selectedAddons : undefined,
+        notes: item.notes || undefined,
       }));
       const result = await createOrder.mutateAsync({
         customerName: form.customerName,

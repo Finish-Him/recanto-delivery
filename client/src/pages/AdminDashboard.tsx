@@ -469,13 +469,33 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Items */}
-                    <div className="rounded-xl p-3 mb-2 space-y-1" style={{ background: "oklch(0.96 0.01 305)" }}>
-                      {order.items.map((item) => (
-                        <div key={item.id} className="flex justify-between text-xs font-semibold" style={{ color: DARK }}>
-                          <span>{item.quantity}× {item.productName}</span>
-                          <span>R$ {parseFloat(item.subtotal).toFixed(2).replace(".", ",")}</span>
-                        </div>
-                      ))}
+                    <div className="rounded-xl p-3 mb-2 space-y-2" style={{ background: "oklch(0.96 0.01 305)" }}>
+                      {order.items.map((item) => {
+                        const addons = item.addonsJson ? (() => { try { return JSON.parse(item.addonsJson as string) as Array<{addonName: string; price: number}>; } catch { return []; } })() : [];
+                        return (
+                          <div key={item.id} className="space-y-0.5">
+                            <div className="flex justify-between text-xs font-semibold" style={{ color: DARK }}>
+                              <span>{item.quantity}× {item.productName}</span>
+                              <span>R$ {parseFloat(item.subtotal).toFixed(2).replace(".", ",")}</span>
+                            </div>
+                            {addons.length > 0 && (
+                              <div className="pl-3 space-y-0.5">
+                                {addons.map((addon, idx) => (
+                                  <div key={idx} className="flex justify-between text-xs" style={{ color: "oklch(0.45 0.03 305)" }}>
+                                    <span>└ {addon.addonName}</span>
+                                    {addon.price > 0 && <span>+R$ {addon.price.toFixed(2).replace(".", ",")}</span>}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            {item.notes && (
+                              <p className="pl-3 text-xs italic" style={{ color: "oklch(0.55 0.12 90)" }}>
+                                📝 {item.notes}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
                       <div className="border-t pt-1 mt-1 flex justify-between font-black text-sm" style={{ borderColor: BORDER, color: PURPLE }}>
                         <span>Total</span>
                         <span>R$ {parseFloat(order.totalAmount).toFixed(2).replace(".", ",")}</span>

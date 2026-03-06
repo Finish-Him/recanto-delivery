@@ -92,6 +92,8 @@ export const orderItems = mysqlTable("orderItems", {
   quantity: int("quantity").notNull(),
   unitPrice: decimal("unitPrice", { precision: 10, scale: 2 }).notNull(),
   subtotal: decimal("subtotal", { precision: 10, scale: 2 }).notNull(),
+  addonsJson: text("addonsJson"),   // JSON: [{addonId, addonName, price}]
+  notes: text("notes"),             // observações livres do cliente
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

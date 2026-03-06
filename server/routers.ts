@@ -59,6 +59,12 @@ const orderItemSchema = z.object({
   quantity: z.number().int().positive(),
   unitPrice: z.string(),
   subtotal: z.string(),
+  selectedAddons: z.array(z.object({
+    addonId: z.number(),
+    addonName: z.string(),
+    price: z.number(),
+  })).optional().default([]),
+  notes: z.string().optional().default(""),
 });
 
 export const appRouter = router({

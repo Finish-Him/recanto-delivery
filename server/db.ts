@@ -150,7 +150,15 @@ export async function seedProductsIfEmpty(): Promise<void> {
 
 export type CreateOrderInput = {
   order: Omit<InsertOrder, "id" | "createdAt" | "updatedAt">;
-  items: Array<Omit<InsertOrderItem, "id" | "orderId" | "createdAt">>;
+  items: Array<{
+    productId: number;
+    productName: string;
+    quantity: number;
+    unitPrice: string;
+    subtotal: string;
+    selectedAddons?: Array<{ addonId: number; addonName: string; price: number }>;
+    notes?: string;
+  }>;
 };
 
 export async function createOrder(input: CreateOrderInput): Promise<number> {
@@ -161,7 +169,15 @@ export async function createOrder(input: CreateOrderInput): Promise<number> {
   const orderId = (result as { insertId: number }).insertId;
 
   const itemsWithOrderId = input.items.map((item) => ({
-    ...item,
+    productId: item.productId,
+    productName: item.productName,
+    quantity: item.quantity,
+    unitPrice: item.unitPrice,
+    subtotal: item.subtotal,
+    addonsJson: item.selectedAddons && item.selectedAddons.length > 0
+      ? JSON.stringify(item.selectedAddons)
+      : null,
+    notes: item.notes || null,
     orderId,
   }));
 
