@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, products, orders, orderItems, InsertOrder, InsertOrderItem, Order, OrderItem, Product } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,96 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ─── Products ────────────────────────────────────────────────────────────────
+
+export async function getAllProducts(): Promise<Product[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(products).where(eq(products.available, true));
+}
+
+export async function seedProductsIfEmpty(): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  const existing = await db.select().from(products).limit(1);
+  if (existing.length > 0) return;
+
+  await db.insert(products).values([
+    {
+      name: "Açaí Tradicional 500ml",
+      description: "Açaí puro batido na hora com granola crocante, banana fresca e leite condensado. Uma explosão de sabor e energia!",
+      price: "18.90",
+      imageUrl: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=600&q=80",
+      category: "açaí",
+      available: true,
+    },
+  ]);
+}
+
+// ─── Orders ──────────────────────────────────────────────────────────────────
+
+export type CreateOrderInput = {
+  order: Omit<InsertOrder, "id" | "createdAt" | "updatedAt">;
+  items: Array<Omit<InsertOrderItem, "id" | "orderId" | "createdAt">>;
+};
+
+export async function createOrder(input: CreateOrderInput): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const [result] = await db.insert(orders).values(input.order);
+  const orderId = (result as { insertId: number }).insertId;
+
+  const itemsWithOrderId = input.items.map((item) => ({
+    ...item,
+    orderId,
+  }));
+
+  await db.insert(orderItems).values(itemsWithOrderId);
+  return orderId;
+}
+
+export type OrderWithItems = Order & { items: OrderItem[] };
+
+export async function getAllOrders(): Promise<OrderWithItems[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const allOrders = await db.select().from(orders).orderBy(desc(orders.createdAt));
+  const allItems = await db.select().from(orderItems);
+
+  return allOrders.map((order) => ({
+    ...order,
+    items: allItems.filter((item) => item.orderId === order.id),
+  }));
+}
+
+export async function getOrderById(id: number): Promise<OrderWithItems | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  const orderResult = await db.select().from(orders).where(eq(orders.id, id)).limit(1);
+  if (orderResult.length === 0) return null;
+
+  const items = await db.select().from(orderItems).where(eq(orderItems.orderId, id));
+  return { ...orderResult[0], items };
+}
+
+export async function updateOrderStatus(
+  id: number,
+  status: Order["status"]
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(orders).set({ status }).where(eq(orders.id, id));
+}
+
+export async function updateOrderStripePaymentIntentId(
+  id: number,
+  stripePaymentIntentId: string
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(orders).set({ stripePaymentIntentId }).where(eq(orders.id, id));
+}
