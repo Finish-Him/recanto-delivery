@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/logo-recanto-app-BiGZ2DoJqLYmsEJWh6h9pU.webp";
-const ACAI_ICON = "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-acai-bowl-66asfMkv2yeAPnrZ7Jcqsm.webp";
+const ACAI_ICON = "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-acai-bowl_40ea32d8.png";
 
 const PURPLE      = "oklch(0.38 0.22 305)";
 const PURPLE_DARK = "oklch(0.22 0.22 305)";

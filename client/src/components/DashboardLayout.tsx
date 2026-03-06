@@ -39,11 +39,11 @@ const DARK        = "oklch(0.12 0 0)";
 
 // ─── Ícones personalizados (CDN) ─────────────────────────────────────────────
 const CUSTOM_ICONS: Record<string, string> = {
-  pedidos:       "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-pedidos-5F6JBY4pcn9QR9DkrBgQop.webp",
-  cardapio:      "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-menu-cardapio-gARLtAU9b8fzatRMEbaeN6.webp",
-  entregadores:  "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-delivery-moto-jD3KPenStzgjwad7AzBPPB.webp",
-  clientes:      "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-clientes-WssdPo2Qmj53TAXCU5e8yK.webp",
-  relatorios:    "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-relatorios-C8JRbZ8Y9KKoE7GuigfCqb.webp",
+  pedidos:       "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-pedidos_0afe5b4e.png",
+  cardapio:      "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-menu-cardapio_b45b6ebc.png",
+  entregadores:  "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-delivery-moto_6d2477e2.png",
+  clientes:      "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-clientes_4c97fa5c.png",
+  relatorios:    "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-relatorios_5ba1d0be.png",
   logo:          "https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/logo-recanto-app-BiGZ2DoJqLYmsEJWh6h9pU.webp",
 };
 

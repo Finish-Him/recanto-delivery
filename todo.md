@@ -256,3 +256,9 @@
 - [x] Skeleton loader na página de produto (/produto/:id) — hero + conteúdo
 - [x] Animação de entrada animate-page-enter em Home, ProductDetail, Checkout, OrderTracking
 - [x] Animação animate-slide-up em cascata nos cards de produto (delay por índice)
+
+## Header - Login/Cadastro e Carrinho
+- [ ] Corrigir ícone do carrinho quebrado no header
+- [ ] Adicionar botão de Login visível no menu do topo
+- [ ] Adicionar botão de Cadastro visível no menu do topo
+- [ ] Exibir nome do usuário logado no header (quando autenticado)

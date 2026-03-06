@@ -3,10 +3,12 @@ import { useCart } from "@/contexts/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { MemphisShapes } from "@/components/MemphisShapes";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Plus, Minus, MapPin, Clock, Star, Smartphone } from "lucide-react";
+import { ShoppingCart, Plus, Minus, MapPin, Clock, Star, Smartphone, LogIn, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 
 const PURPLE = "oklch(0.38 0.22 305)";
 const PURPLE_MED = "oklch(0.46 0.25 305)";
@@ -22,6 +24,7 @@ export default function Home() {
   const { data: products, isLoading } = trpc.products.list.useQuery();
   const { addItem, updateQuantity, items, totalItems, totalAmount, grandTotal, deliveryFee, setIsOpen } = useCart();
   const [, navigate] = useLocation();
+  const { user, loading: authLoading } = useAuth();
 
   const getItemQuantity = (productId: number) => {
     const item = items.find((i) => i.productId === productId);
@@ -96,6 +99,43 @@ export default function Home() {
               <Smartphone className="w-4 h-4" />
               <span>Baixar App</span>
             </a>
+            {/* Login / Cadastro */}
+            {!authLoading && !user && (
+              <>
+                <a
+                  href={getLoginUrl()}
+                  className="hidden sm:flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
+                  style={{ background: "oklch(0.32 0.20 305)", color: GOLD }}
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Entrar</span>
+                </a>
+                <a
+                  href={getLoginUrl()}
+                  className="hidden md:flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
+                  style={{ background: GOLD, color: DARK }}
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Cadastrar</span>
+                </a>
+              </>
+            )}
+            {!authLoading && user && (
+              <div
+                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full"
+                style={{ background: "oklch(0.32 0.20 305)" }}
+              >
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black"
+                  style={{ background: GOLD, color: DARK }}
+                >
+                  {(user.name ?? user.email ?? "U")[0].toUpperCase()}
+                </div>
+                <span className="text-xs font-bold" style={{ color: WHITE }}>
+                  {(user.name ?? user.email ?? "Usuário").split(" ")[0]}
+                </span>
+              </div>
+            )}
             {/* Botão carrinho — área de toque mínima 48px */}
             <button
               onClick={() => setIsOpen(true)}
@@ -111,7 +151,7 @@ export default function Home() {
               aria-label="Abrir carrinho"
             >
               <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-cart-mXzBJNJbNmhGCiNwJkdaHT.webp"
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-cart_25765d2c.png"
                 alt="Carrinho"
                 className="w-5 h-5 object-contain"
               />
@@ -128,6 +168,31 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Barra Login/Cadastro mobile — visível apenas em telas pequenas quando não logado */}
+      {!authLoading && !user && (
+        <div
+          className="sm:hidden relative z-10 flex items-center justify-center gap-2 px-4 py-2"
+          style={{ background: "oklch(0.32 0.20 305)" }}
+        >
+          <a
+            href={getLoginUrl()}
+            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-black py-2.5 rounded-full transition-all active:scale-95"
+            style={{ background: "oklch(0.42 0.22 305)", color: GOLD }}
+          >
+            <LogIn className="w-4 h-4" />
+            <span>Entrar</span>
+          </a>
+          <a
+            href={getLoginUrl()}
+            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-black py-2.5 rounded-full transition-all active:scale-95"
+            style={{ background: GOLD, color: DARK }}
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>Cadastrar</span>
+          </a>
+        </div>
+      )}
 
       {/* Hero Banner */}
       <section className="relative z-10 overflow-hidden" style={{ background: PURPLE }}>
@@ -228,7 +293,7 @@ export default function Home() {
                       ) : (
                         <div className="w-full h-full flex items-center justify-center" style={{ background: "oklch(0.95 0.04 305)" }}>
                           <img
-                            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-acai-bowl-Gy4sBzJfGHGJFVTHDRDCdB.webp"
+                            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-acai-bowl_40ea32d8.png"
                             alt="Açaí"
                             className="w-24 h-24 object-contain"
                           />

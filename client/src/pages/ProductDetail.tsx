@@ -203,7 +203,7 @@ export default function ProductDetail() {
             style={{ height: 280, background: `linear-gradient(135deg, ${PURPLE} 0%, oklch(0.55 0.22 305) 100%)` }}
           >
             <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-acai-bowl-Gy4sBzJfGHGJFVTHDRDCdB.webp"
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/icon-acai-bowl_40ea32d8.png"
               alt="Açaí"
               className="w-40 h-40 object-contain drop-shadow-xl"
             />
