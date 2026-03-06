@@ -185,6 +185,32 @@ export async function createOrder(input: CreateOrderInput): Promise<number> {
   return orderId;
 }
 
+// Helper para buscar pedidos de um usuário específico
+export async function getOrdersByUser(userId: number): Promise<(OrderWithItems)[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  const userOrders = await db
+    .select()
+    .from(orders)
+    .where(eq(orders.userId, userId))
+    .orderBy(desc(orders.createdAt))
+    .limit(50);
+
+  if (userOrders.length === 0) return [];
+
+  const orderIds = userOrders.map((o) => o.id);
+  const allItems = await db
+    .select()
+    .from(orderItems)
+    .where(sql`${orderItems.orderId} IN (${sql.join(orderIds.map((id) => sql`${id}`), sql`, `)})`)
+
+  return userOrders.map((order) => ({
+    ...order,
+    items: allItems.filter((item) => item.orderId === order.id),
+  }));
+}
+
 export type OrderWithItems = Order & { items: OrderItem[] };
 
 export async function getAllOrders(): Promise<(OrderWithItems & { deliveryPersonName: string | null })[]> {

@@ -3,7 +3,8 @@ import { useCart } from "@/contexts/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { MemphisShapes } from "@/components/MemphisShapes";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Plus, Minus, MapPin, Clock, Star, Smartphone, LogIn, UserPlus } from "lucide-react";
+import { ShoppingCart, Plus, Minus, MapPin, Clock, Star, Smartphone, LogIn, UserPlus, ClipboardList, Download, Menu, X } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
@@ -25,6 +26,8 @@ export default function Home() {
   const { addItem, updateQuantity, items, totalItems, totalAmount, grandTotal, deliveryFee, setIsOpen } = useCart();
   const [, navigate] = useLocation();
   const { user, loading: authLoading } = useAuth();
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const getItemQuantity = (productId: number) => {
     const item = items.find((i) => i.productId === productId);
@@ -52,9 +55,10 @@ export default function Home() {
 
       {/* Header — altura mínima 64px, ícones e botões com área de toque ≥48px */}
       <header
-        className="relative z-10 sticky top-0 shadow-sm"
+        className="relative z-20 sticky top-0 shadow-md"
         style={{ background: PURPLE }}
       >
+        {/* Linha principal: logo + carrinho + menu */}
         <div className="container flex items-center justify-between" style={{ minHeight: 64 }}>
           {/* Logo */}
           <div className="flex items-center gap-3">
@@ -83,60 +87,72 @@ export default function Home() {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
-            <div
-              className="hidden sm:flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-full"
-              style={{ background: "oklch(0.32 0.20 305)", color: GOLD }}
-            >
-              <Clock className="w-4 h-4" />
-              <span>30–45 min</span>
-            </div>
-            {/* Link Baixar App */}
-            <a
-              href="/app"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
-              style={{ background: "oklch(0.32 0.20 305)", color: WHITE }}
-            >
-              <Smartphone className="w-4 h-4" />
-              <span>Baixar App</span>
-            </a>
-            {/* Login / Cadastro */}
-            {!authLoading && !user && (
-              <>
-                <a
-                  href={getLoginUrl()}
-                  className="hidden sm:flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
-                  style={{ background: "oklch(0.32 0.20 305)", color: GOLD }}
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>Entrar</span>
-                </a>
-                <a
-                  href={getLoginUrl()}
-                  className="hidden md:flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
-                  style={{ background: GOLD, color: DARK }}
-                >
-                  <UserPlus className="w-4 h-4" />
-                  <span>Cadastrar</span>
-                </a>
-              </>
-            )}
-            {!authLoading && user && (
+            {/* Desktop: links de navegação */}
+            <div className="hidden sm:flex items-center gap-2">
               <div
-                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full"
-                style={{ background: "oklch(0.32 0.20 305)" }}
+                className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-full"
+                style={{ background: "oklch(0.32 0.20 305)", color: GOLD }}
               >
-                <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black"
-                  style={{ background: GOLD, color: DARK }}
-                >
-                  {(user.name ?? user.email ?? "U")[0].toUpperCase()}
-                </div>
-                <span className="text-xs font-bold" style={{ color: WHITE }}>
-                  {(user.name ?? user.email ?? "Usuário").split(" ")[0]}
-                </span>
+                <Clock className="w-4 h-4" />
+                <span>30–45 min</span>
               </div>
-            )}
-            {/* Botão carrinho — área de toque mínima 48px */}
+              <a
+                href="/app"
+                className="flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
+                style={{ background: "oklch(0.32 0.20 305)", color: WHITE }}
+              >
+                <Download className="w-4 h-4" />
+                <span>Instalar App</span>
+              </a>
+              {!authLoading && !user && (
+                <>
+                  <a
+                    href={getLoginUrl()}
+                    className="flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
+                    style={{ background: "oklch(0.32 0.20 305)", color: GOLD }}
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>Entrar</span>
+                  </a>
+                  <a
+                    href={getLoginUrl()}
+                    className="flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
+                    style={{ background: GOLD, color: DARK }}
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    <span>Criar conta</span>
+                  </a>
+                </>
+              )}
+              {!authLoading && user && (
+                <>
+                  <a
+                    href="/meus-pedidos"
+                    className="flex items-center gap-1.5 text-xs font-black px-3 py-2 rounded-full transition-all hover:opacity-90"
+                    style={{ background: "oklch(0.32 0.20 305)", color: WHITE }}
+                  >
+                    <ClipboardList className="w-4 h-4" />
+                    <span>Meus Pedidos</span>
+                  </a>
+                  <div
+                    className="flex items-center gap-2 px-3 py-2 rounded-full"
+                    style={{ background: "oklch(0.32 0.20 305)" }}
+                  >
+                    <div
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black"
+                      style={{ background: GOLD, color: DARK }}
+                    >
+                      {(user.name ?? user.email ?? "U")[0].toUpperCase()}
+                    </div>
+                    <span className="text-xs font-bold" style={{ color: WHITE }}>
+                      {(user.name ?? user.email ?? "Usuário").split(" ")[0]}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Botão carrinho */}
             <button
               onClick={() => setIsOpen(true)}
               className="relative flex items-center gap-2 rounded-full font-bold text-sm transition-all hover:opacity-90 active:scale-95"
@@ -165,34 +181,106 @@ export default function Home() {
                 </span>
               )}
             </button>
+
+            {/* Mobile: botão hamburguer */}
+            <button
+              className="sm:hidden flex items-center justify-center rounded-full transition-all active:scale-95"
+              style={{ background: "oklch(0.32 0.20 305)", color: WHITE, width: 44, height: 44 }}
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Menu"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
-      </header>
 
-      {/* Barra Login/Cadastro mobile — visível apenas em telas pequenas quando não logado */}
-      {!authLoading && !user && (
+        {/* Mobile: menu expandido */}
+        {menuOpen && (
+          <div
+            className="sm:hidden px-4 pb-4 pt-2 flex flex-col gap-2 animate-slide-up"
+            style={{ background: "oklch(0.32 0.20 305)" }}
+          >
+            {!authLoading && !user && (
+              <>
+                <a
+                  href={getLoginUrl()}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-black text-sm transition-all active:scale-[0.98]"
+                  style={{ background: GOLD, color: DARK }}
+                >
+                  <UserPlus className="w-5 h-5" />
+                  <span>Criar conta</span>
+                  <span className="ml-auto text-xs font-semibold opacity-70">Grátis</span>
+                </a>
+                <a
+                  href={getLoginUrl()}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-black text-sm transition-all active:scale-[0.98]"
+                  style={{ background: "oklch(0.42 0.22 305)", color: WHITE }}
+                >
+                  <LogIn className="w-5 h-5" />
+                  <span>Entrar na conta</span>
+                </a>
+              </>
+            )}
+            {!authLoading && user && (
+              <>
+                <div
+                  className="flex items-center gap-3 px-4 py-3 rounded-2xl"
+                  style={{ background: "oklch(0.42 0.22 305)" }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
+                    style={{ background: GOLD, color: DARK }}
+                  >
+                    {(user.name ?? user.email ?? "U")[0].toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-black text-sm" style={{ color: WHITE }}>
+                      {user.name ?? user.email ?? "Usuário"}
+                    </p>
+                    <p className="text-xs" style={{ color: GOLD }}>Conta ativa</p>
+                  </div>
+                </div>
+                <a
+                  href="/meus-pedidos"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-black text-sm transition-all active:scale-[0.98]"
+                  style={{ background: "oklch(0.42 0.22 305)", color: WHITE }}
+                >
+                  <ClipboardList className="w-5 h-5" />
+                  <span>Meus Pedidos</span>
+                </a>
+              </>
+            )}
+            <a
+              href="/app"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-black text-sm transition-all active:scale-[0.98]"
+              style={{ background: "oklch(0.42 0.22 305)", color: WHITE }}
+            >
+              <Download className="w-5 h-5" />
+              <span>Instalar App no celular</span>
+              <span className="ml-auto text-xs font-semibold" style={{ color: GOLD }}>Grátis</span>
+            </a>
+            <div
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold"
+              style={{ color: GOLD }}
+            >
+              <Clock className="w-4 h-4" />
+              <span>Entrega em 30–45 min</span>
+            </div>
+          </div>
+        )}
+
+        {/* Desktop: barra de navegação secundária — sempre visível */}
         <div
-          className="sm:hidden relative z-10 flex items-center justify-center gap-2 px-4 py-2"
-          style={{ background: "oklch(0.32 0.20 305)" }}
+          className="hidden sm:block border-t"
+          style={{ borderColor: "oklch(0.30 0.18 305)" }}
         >
-          <a
-            href={getLoginUrl()}
-            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-black py-2.5 rounded-full transition-all active:scale-95"
-            style={{ background: "oklch(0.42 0.22 305)", color: GOLD }}
-          >
-            <LogIn className="w-4 h-4" />
-            <span>Entrar</span>
-          </a>
-          <a
-            href={getLoginUrl()}
-            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-black py-2.5 rounded-full transition-all active:scale-95"
-            style={{ background: GOLD, color: DARK }}
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>Cadastrar</span>
-          </a>
+          {/* já mostrado no header principal acima */}
         </div>
-      )}
+      </header>
 
       {/* Hero Banner */}
       <section className="relative z-10 overflow-hidden" style={{ background: PURPLE }}>
@@ -422,7 +510,7 @@ export default function Home() {
 
       <CartDrawer />
 
-      {/* Rodapé */}
+      {/* Rodápé */}
       <footer
         className="mt-8 py-6 px-4 text-center"
         style={{ borderTop: `1px solid oklch(0.92 0.03 305)` }}
@@ -442,26 +530,10 @@ export default function Home() {
             (21) 98174-9450
           </a>
         </p>
-        <div className="mt-4 flex items-center justify-center gap-4 flex-wrap">
-          <a
-            href="/cadastro"
-            className="text-xs font-bold underline underline-offset-2 transition-opacity hover:opacity-80"
-            style={{ color: PURPLE }}
-          >
-            Criar conta
-          </a>
-          <span className="text-xs" style={{ color: "oklch(0.75 0.03 305)" }}>•</span>
-          <a
-            href="/app"
-            className="text-xs font-bold underline underline-offset-2 transition-opacity hover:opacity-80"
-            style={{ color: PURPLE }}
-          >
-            Instalar App
-          </a>
-          <span className="text-xs" style={{ color: "oklch(0.75 0.03 305)" }}>•</span>
+        <div className="mt-3 flex items-center justify-center gap-3 flex-wrap">
           <a
             href="/login"
-            className="text-xs font-semibold opacity-30 hover:opacity-60 transition-opacity"
+            className="text-xs font-semibold opacity-40 hover:opacity-70 transition-opacity"
             style={{ color: "oklch(0.45 0.03 305)" }}
           >
             área restrita

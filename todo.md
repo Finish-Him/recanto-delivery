@@ -258,7 +258,18 @@
 - [x] Animação animate-slide-up em cascata nos cards de produto (delay por índice)
 
 ## Header - Login/Cadastro e Carrinho
-- [ ] Corrigir ícone do carrinho quebrado no header
-- [ ] Adicionar botão de Login visível no menu do topo
-- [ ] Adicionar botão de Cadastro visível no menu do topo
-- [ ] Exibir nome do usuário logado no header (quando autenticado)
+- [x] Corrigir ícone do carrinho quebrado no header (nova URL CDN)
+- [x] Adicionar botão de Login visível no menu do topo
+- [x] Adicionar botão de Cadastro visível no menu do topo
+- [x] Exibir nome do usuário logado no header (quando autenticado)
+- [x] Barra mobile de Login/Cadastro abaixo do header
+
+## Meus Pedidos (Área do Cliente)
+- [ ] API: listar pedidos do usuário logado (protectedProcedure)
+- [ ] Página /meus-pedidos com lista de pedidos em ordem cronológica
+- [ ] Card de pedido com: número, data, status visual (badge colorida), total
+- [ ] Expandir card para ver itens, adicionais e observações
+- [ ] Botão "Repetir Pedido" que adiciona todos os itens ao carrinho
+- [ ] Estado vazio com CTA para o cardápio
+- [ ] Link "Meus Pedidos" no header (visível quando logado)
+- [ ] Rota /meus-pedidos registrada no App.tsx

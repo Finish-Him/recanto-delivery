@@ -72,6 +72,7 @@ export const orders = mysqlTable("orders", {
   notes: text("notes"),
   stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 255 }),
   deliveryPersonId: int("deliveryPersonId"),
+  userId: int("userId"),  // FK opcional para usuário logado
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

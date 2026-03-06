@@ -17,6 +17,7 @@ import OrderTracking from "./pages/OrderTracking";
 import Register from "./pages/Register";
 import AppDownload from "./pages/AppDownload";
 import ProductDetail from "./pages/ProductDetail";
+import MeusPedidos from "./pages/MeusPedidos";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/app" component={AppDownload} />
       <Route path="/instalar" component={AppDownload} />
       <Route path="/produto/:id" component={ProductDetail} />
+      <Route path="/meus-pedidos" component={MeusPedidos} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

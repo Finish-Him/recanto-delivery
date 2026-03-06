@@ -30,6 +30,7 @@ import {
   assignOrderToDeliveryPerson,
   getOrdersByDeliveryPerson,
   getDeliveryPersonStats,
+  getOrdersByUser,
   getProductWithAddons,
   getAddonCategoriesByProduct,
   createAddonCategory,
@@ -180,8 +181,10 @@ export const appRouter = router({
           items: z.array(orderItemSchema).min(1),
         })
       )
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         const { items, ...orderData } = input;
+        // Se o cliente estiver logado, associar o pedido ao seu userId
+        const userId = ctx.user?.id ?? null;
 
         const orderId = await createOrder({
           order: {
@@ -196,6 +199,7 @@ export const appRouter = router({
             changeFor: orderData.changeFor ?? null,
             notes: orderData.notes ?? null,
             status: "pendente",
+            userId,
           },
           items,
         });
@@ -551,6 +555,13 @@ export const appRouter = router({
         await deleteAddon(input.id);
         return { success: true };
       }),
+  }),
+
+  // ─── Meus Pedidos (cliente logado) ─────────────────────────────────────────
+  myOrders: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return getOrdersByUser(ctx.user.id);
+    }),
   }),
 
   // ─── Stripe ──────────────────────────────────────────────────────────────────
