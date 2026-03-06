@@ -62,3 +62,7 @@
 - [x] Exibir frete no carrinho e no checkout
 - [x] Incluir frete no total do pedido
 - [x] Configurar acesso admin para testes
+
+## Correções e Melhorias
+- [x] Corrigir imagem do Açaí Tradicional (estava mostrando prato asiático)
+- [x] Criar página de login dedicada /login para o painel admin

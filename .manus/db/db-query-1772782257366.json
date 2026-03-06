@@ -1,0 +1,9 @@
+{
+  "query": "\nUPDATE products \nSET imageUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/acai-tradicional_13e1dd22.jpg'\nWHERE name LIKE 'Açaí Tradicional%';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3RJAdkxkLcRXBfg.fe15c385d774 --database Z28cUTNS5S5j4gtNT63Tte --execute \nUPDATE products \nSET imageUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663315286510/Z28cUTNS5S5j4gtNT63Tte/acai-tradicional_13e1dd22.jpg'\nWHERE name LIKE 'Açaí Tradicional%';\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 57
+}

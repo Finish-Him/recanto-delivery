@@ -8,6 +8,7 @@ import { CartProvider } from "./contexts/CartContext";
 import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
 
 function Router() {
   return (
@@ -15,6 +16,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/login" component={AdminLogin} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
