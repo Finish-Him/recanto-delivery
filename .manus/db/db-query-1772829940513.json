@@ -1,0 +1,59 @@
+{
+  "query": "SELECT id, name, description, category, price FROM products ORDER BY category, name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3RJAdkxkLcRXBfg.fe15c385d774 --database Z28cUTNS5S5j4gtNT63Tte --execute SELECT id, name, description, category, price FROM products ORDER BY category, name;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Açaí Tradicional 500ml",
+      "description": "Açaí puro batido na hora com granola crocante, banana fresca e leite condensado. Uma explosão de sabor e energia!",
+      "category": "açaí",
+      "price": "18.90"
+    },
+    {
+      "id": "4",
+      "name": "Açaí de Garrafa 300ml",
+      "description": "Açaí gelado e cremoso em garrafa prática para levar pra onde quiser. Batido na hora, sem conservantes.",
+      "category": "Açaí de Garrafa",
+      "price": "18.90"
+    },
+    {
+      "id": "5",
+      "name": "Açaí de Garrafa 500ml",
+      "description": "Nossa garrafa grande de açaí puro e cremoso. Ideal para compartilhar ou para quem tem muito apetite!",
+      "category": "Açaí de Garrafa",
+      "price": "26.90"
+    },
+    {
+      "id": "6",
+      "name": "Açaí de KitKat 500ml",
+      "description": "Açaí cremoso com pedaços de KitKat triturado misturado, cobertura de chocolate e calda especial. Irresistível!",
+      "category": "Açaí Especial",
+      "price": "34.90"
+    },
+    {
+      "id": "2",
+      "name": "Açaí Tradicional 300ml",
+      "description": "Açaí puro batido na hora, cremoso e fresquinho. Monte do seu jeito com granola, leite condensado, banana e muito mais!",
+      "category": "Açaí no Pote",
+      "price": "14.90"
+    },
+    {
+      "id": "3",
+      "name": "Açaí Tradicional 500ml",
+      "description": "Porção generosa do nosso açaí puro, batido na hora com textura cremosa perfeita. Inclui cobertura à sua escolha.",
+      "category": "Açaí no Pote",
+      "price": "21.90"
+    },
+    {
+      "id": "7",
+      "name": "Combo Irresistível",
+      "description": "Açaí de KitKat 500ml + Açaí de Garrafa 300ml. Leve mais por menos! Perfeito para dividir com quem você ama.",
+      "category": "Combos",
+      "price": "46.90"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\tcategory\tprice\n1\tAçaí Tradicional 500ml\tAçaí puro batido na hora com granola crocante, banana fresca e leite condensado. Uma explosão de sabor e energia!\taçaí\t18.90\n4\tAçaí de Garrafa 300ml\tAçaí gelado e cremoso em garrafa prática para levar pra onde quiser. Batido na hora, sem conservantes.\tAçaí de Garrafa\t18.90\n5\tAçaí de Garrafa 500ml\tNossa garrafa grande de açaí puro e cremoso. Ideal para compartilhar ou para quem tem muito apetite!\tAçaí de Garrafa\t26.90\n6\tAçaí de KitKat 500ml\tAçaí cremoso com pedaços de KitKat triturado misturado, cobertura de chocolate e calda especial. Irresistível!\tAçaí Especial\t34.90\n2\tAçaí Tradicional 300ml\tAçaí puro batido na hora, cremoso e fresquinho. Monte do seu jeito com granola, leite condensado, banana e muito mais!\tAçaí no Pote\t14.90\n3\tAçaí Tradicional 500ml\tPorção generosa do nosso açaí puro, batido na hora com textura cremosa perfeita. Inclui cobertura à sua escolha.\tAçaí no Pote\t21.90\n7\tCombo Irresistível\tAçaí de KitKat 500ml + Açaí de Garrafa 300ml. Leve mais por menos! Perfeito para dividir com quem você ama.\tCombos\t46.90\n",
+  "stderr": "",
+  "execution_time_ms": 129
+}
